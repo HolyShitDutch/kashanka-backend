@@ -1,16 +1,18 @@
 package main
 
 import (
-	"log"
-	"net/http"
+	"log/slog"
 
+	"github.com/moroz/kashanka/config"
 	"github.com/moroz/kashanka/handlers"
 )
 
 func main() {
 	r := handlers.Router()
 
-	log.Print("Listening on :3000")
+	slog.SetDefault(r.Logger)
 
-	log.Fatal(http.ListenAndServe(":3000", r))
+	if err := r.Start(config.AppHostPort); err != nil {
+		r.Logger.Error("Failed to start server", "error", err)
+	}
 }

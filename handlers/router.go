@@ -1,12 +1,10 @@
 package handlers
 
 import (
-	"net/http"
-
 	"github.com/labstack/echo/v5"
 )
 
-func Router() http.Handler {
+func Router() *echo.Echo {
 	r := echo.New()
 
 	return r

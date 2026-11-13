@@ -1,0 +1,31 @@
+[tools]
+"aqua:pressly/goose" = "latest"
+sqlc = "latest"
+
+[env]
+PGDATABASE = "kashanka_dev"
+DATABASE_URL = "postgres://postgres:postgres@localhost/{{ env.PGDATABASE }}"
+GOOSE_DRIVER = "postgres"
+GOOSE_MIGRATION_DIR = "db/migrations"
+GOOSE_DBSTRING = "{{ env.DATABASE_URL }}"
+
+[tasks."db:create"]
+run = """
+#!/usr/bin/env -S bash -euo pipefail
+
+exists="$(
+  psql postgres --csv -t -c "select exists (select from pg_catalog.pg_database where datname='$PGDATABASE')"
+)"
+
+if [[ "$exists" = "f" ]]; then
+  createdb
+else
+  echo "Database $PGDATABASE exists, skipping..."
+fi
+"""
+
+[tasks."db:migrate"]
+run = "goose up"
+
+[tasks."db:setup"]
+depends = ["db:create", "db:migrate"]

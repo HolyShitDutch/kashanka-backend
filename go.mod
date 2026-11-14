@@ -20,6 +20,7 @@ require (
 	go.yaml.in/yaml/v3 v3.0.6 // indirect
 	golang.org/x/sync v0.25.0 // indirect
 	golang.org/x/text v0.44.0 // indirect
+	maragu.dev/gomponents v1.4.0
 	v.io v0.1.15 // indirect
 	v.io/x/lib v0.1.7 // indirect
 )

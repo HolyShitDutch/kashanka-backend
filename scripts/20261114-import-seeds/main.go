@@ -116,8 +116,20 @@ func main() {
 			log.Fatal(err)
 		}
 
-		for _, row := range rows {
-			var cardId uuid.UUID
+		slug := strings.Replace(filepath.Base(file), ".tsv", "", 1)
+
+		var collectionId uuid.UUID
+		err = db.QueryRow(
+			ctx,
+			insertCollectionQuery,
+			slug, slug,
+		).Scan(&collectionId)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		for i, row := range rows {
+			var cardId, joinTableId uuid.UUID
 			answers, err := json.Marshal(map[string]string{
 				"en":      row.English,
 				"zh-Hant": row.Chinese,
@@ -130,6 +142,8 @@ func main() {
 			if err != nil {
 				log.Fatal(err)
 			}
+
+			err = db.QueryRow(ctx, insertJoinQuery, collectionId, row.ID, i+1).Scan(&joinTableId)
 		}
 	}
 

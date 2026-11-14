@@ -29,3 +29,6 @@ run = "goose up"
 
 [tasks."db:setup"]
 depends = ["db:create", "db:migrate"]
+
+[tasks.gen]
+run = "sqlc generate"

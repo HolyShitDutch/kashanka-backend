@@ -1,34 +1,74 @@
 [tools]
 "aqua:pressly/goose" = "latest"
+go = "1.27.4"
 sqlc = "latest"
 
 [env]
 PGDATABASE = "kashanka_dev"
-DATABASE_URL = "postgres://postgres:postgres@localhost/{{ env.PGDATABASE }}"
+DATABASE_URL = "postgres://postgres:postgres@localhost/{{ env.PGDATABASE }}?options=-c%20Timezone%3DUTC"
 GOOSE_DRIVER = "postgres"
 GOOSE_MIGRATION_DIR = "db/migrations"
 GOOSE_DBSTRING = "{{ env.DATABASE_URL }}"
 
-[tasks."db:create"]
+TEST_DATABASE = "kashanka_test"
+TEST_DATABASE_URL = "postgres://postgres:postgres@localhost/{{ env.TEST_DATABASE }}?options=-c%20Timezone%3DUTC"
+
+[task_templates.create_db]
+vars = { database = "" }
 run = """
 #!/usr/bin/env -S bash -euo pipefail
 
+if [[ -z '{{ vars.database }}' ]]; then
+  echo "FATAL: database is not set"
+  exit 1
+fi
+
 exists="$(
-  psql postgres --csv -t -c "select exists (select from pg_catalog.pg_database where datname='$PGDATABASE')"
+  psql postgres --csv -t -c "select exists (select from pg_catalog.pg_database where datname='{{ vars.database }}')"
 )"
 
 if [[ "$exists" = "f" ]]; then
-  createdb
+  createdb '{{ vars.database }}' && echo "Created database {{ vars.database }}"
 else
-  echo "Database $PGDATABASE exists, skipping..."
+  echo "Database {{ vars.database }} exists, skipping..."
 fi
 """
+
+[tasks."db:create"]
+extends = "create_db"
+vars = {
+  database = "{{ env.PGDATABASE }}"
+}
+
+[tasks."db:test:prepare"]
+extends = "create_db"
+vars = {
+  database = "{{ env.TEST_DATABASE }}"
+}
 
 [tasks."db:migrate"]
 run = "goose up"
 
+[tasks."db:drop"]
+run = "dropdb --if-exists $PGDATABASE"
+
 [tasks."db:setup"]
-depends = ["db:create", "db:migrate"]
+run = [
+  { task = "db:create" },
+  { task = "db:migrate" },
+]
 
 [tasks.gen]
 run = "sqlc generate"
+
+[tasks."db:reset"]
+run = [
+  { task = "db:drop" },
+  { task = "db:setup" },
+]
+
+[tasks.test]
+depends = ["db:test:prepare"]
+run = [
+  "go test -v ./..."
+]

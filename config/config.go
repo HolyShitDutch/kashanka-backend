@@ -25,3 +25,6 @@ func GetenvWithDefault(name, defaultValue string) string {
 var AppHost = GetenvWithDefault("HOST", "::")
 var AppPort = GetenvWithDefault("PORT", "3000")
 var AppHostPort = net.JoinHostPort(AppHost, AppPort)
+var DatabaseUrl = MustGetenv("DATABASE_URL")
+
+var TestDatabaseUrl = os.Getenv("TEST_DATABASE_URL")

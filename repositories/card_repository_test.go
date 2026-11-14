@@ -2,6 +2,7 @@ package repositories_test
 
 import (
 	"fmt"
+	"log/slog"
 	"net/url"
 	"strings"
 	"testing"
@@ -11,6 +12,10 @@ import (
 	"github.com/moroz/kashanka/internal/migrate"
 	"github.com/stretchr/testify/assert"
 )
+
+func init() {
+	slog.SetLogLoggerLevel(slog.LevelError)
+}
 
 func freshDatabase(t *testing.T) *pgxpool.Pool {
 	t.Helper()

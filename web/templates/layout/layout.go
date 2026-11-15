@@ -6,10 +6,22 @@ import (
 )
 
 func Layout(title string, children ...Node) Node {
+	return RootLayout(title, Div(
+		Class("container mx-auto my-6"),
+		Group(children),
+	))
+}
+
+func RootLayout(title string, children ...Node) Node {
 	return HTML(
 		Head(
-			Title(title),
+			Meta(Charset("utf-8")),
+			Meta(Name("viewport"), Content("width=device-width, initial-scale=1.0")),
+			Meta(Name("robots"), Content("noindex, nofollow")),
+			Meta(Name("color-scheme"), Content("dark light")),
+			TitleEl(Text(title)),
+			AssetEntryPoint(),
 		),
-		Group(children),
+		Body(Group(children)),
 	)
 }

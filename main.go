@@ -7,7 +7,7 @@ import (
 
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/moroz/kashanka/config"
-	"github.com/moroz/kashanka/handlers"
+	"github.com/moroz/kashanka/web/handlers"
 )
 
 func main() {

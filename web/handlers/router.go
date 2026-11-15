@@ -16,5 +16,8 @@ func Router(props *RouterDeps) *echo.Echo {
 	r := echo.New()
 	r.Logger = props.Logger
 
+	collections := CollectionController(props.DB)
+	r.GET("/", collections.Index)
+
 	return r
 }

@@ -2,6 +2,9 @@
 "aqua:air-verse/air" = "latest"
 "aqua:pressly/goose" = "latest"
 go = "1.27.4"
+node = "latest"
+overmind = "latest"
+pnpm = "latest"
 sqlc = "latest"
 
 [env]

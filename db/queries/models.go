@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/moroz/kashanka/internal/dbtypes"
 	"uuid"
 )
 
@@ -127,9 +128,9 @@ func (e Locale) Valid() bool {
 type Card struct {
 	ID               uuid.UUID
 	QuestionLanguage Locale
-	AnswerLanguages  []Locale
+	AnswerLanguages  []string
 	Question         string
-	Answers          []byte
+	Answers          dbtypes.AnswerMap
 	InsertedAt       time.Time
 	UpdatedAt        time.Time
 }

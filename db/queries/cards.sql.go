@@ -7,6 +7,8 @@ package queries
 
 import (
 	"context"
+
+	"uuid"
 )
 
 const listCards = `-- name: ListCards :many
@@ -15,6 +17,41 @@ select id, question_language, answer_languages, question, answers, inserted_at, 
 
 func (q *Queries) ListCards(ctx context.Context) ([]*Card, error) {
 	rows, err := q.db.Query(ctx, listCards)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []*Card
+	for rows.Next() {
+		var i Card
+		if err := rows.Scan(
+			&i.ID,
+			&i.QuestionLanguage,
+			&i.AnswerLanguages,
+			&i.Question,
+			&i.Answers,
+			&i.InsertedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, &i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listCardsForCollection = `-- name: ListCardsForCollection :many
+select c.id, c.question_language, c.answer_languages, c.question, c.answers, c.inserted_at, c.updated_at from cards c
+  join collections_cards cc on cc.card_id = c.id
+  where cc.collection_id = $1
+  order by cc.position
+`
+
+func (q *Queries) ListCardsForCollection(ctx context.Context, collectionID uuid.UUID) ([]*Card, error) {
+	rows, err := q.db.Query(ctx, listCardsForCollection, collectionID)
 	if err != nil {
 		return nil, err
 	}

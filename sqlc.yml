@@ -42,3 +42,12 @@ overrides:
         go_type:
           import: time
           type: "Time"
+
+      - column: "cards.answers"
+        go_type:
+          import: github.com/moroz/kashanka/internal/dbtypes
+          type: "AnswerMap"
+
+      - column: "cards.answer_languages"
+        go_type:
+          type: "[]string"

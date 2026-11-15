@@ -8,6 +8,7 @@ require (
 	github.com/labstack/echo/v5 v5.4.5
 	github.com/pressly/goose/v3 v3.30.1
 	github.com/stretchr/testify v1.12.1
+	maragu.dev/gomponents v1.4.0
 )
 
 require (
@@ -19,8 +20,9 @@ require (
 	go.uber.org/multierr v1.11.0 // indirect
 	go.yaml.in/yaml/v3 v3.0.6 // indirect
 	golang.org/x/sync v0.25.0 // indirect
+	golang.org/x/term v0.48.0 // indirect
 	golang.org/x/text v0.44.0 // indirect
-	maragu.dev/gomponents v1.4.0
+	golang.org/x/time v0.15.0 // indirect
 	v.io v0.1.15 // indirect
 	v.io/x/lib v0.1.7 // indirect
 )

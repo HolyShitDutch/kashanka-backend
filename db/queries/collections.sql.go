@@ -9,6 +9,24 @@ import (
 	"context"
 )
 
+const getCollectionBySlug = `-- name: GetCollectionBySlug :one
+select id, title, slug, parent_id, inserted_at, updated_at from collections where slug = $1
+`
+
+func (q *Queries) GetCollectionBySlug(ctx context.Context, slug string) (*Collection, error) {
+	row := q.db.QueryRow(ctx, getCollectionBySlug, slug)
+	var i Collection
+	err := row.Scan(
+		&i.ID,
+		&i.Title,
+		&i.Slug,
+		&i.ParentID,
+		&i.InsertedAt,
+		&i.UpdatedAt,
+	)
+	return &i, err
+}
+
 const listCollections = `-- name: ListCollections :many
 select id, title, slug, parent_id, inserted_at, updated_at from collections order by title
 `

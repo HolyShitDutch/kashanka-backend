@@ -1,4 +1,5 @@
 [tools]
+"aqua:air-verse/air" = "latest"
 "aqua:pressly/goose" = "latest"
 go = "1.27.4"
 sqlc = "latest"

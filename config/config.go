@@ -29,4 +29,4 @@ var DatabaseUrl = MustGetenv("DATABASE_URL")
 
 var TestDatabaseUrl = os.Getenv("TEST_DATABASE_URL")
 
-var ViteDevServer = GetenvWithDefault("VITE_DEV_SERVER", "http://localhost:5173")
+var ViteDevServer = GetenvWithDefault("VITE_DEV_SERVER", "https://assets.localhost")

@@ -1,0 +1,12 @@
+{
+  default_bind 127.0.0.1 [::1]
+  auto_https disable_redirects
+}
+
+kashanka.localhost {
+  reverse_proxy [::1]:5000
+}
+
+assets.localhost {
+  reverse_proxy [::1]:5173
+}

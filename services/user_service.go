@@ -7,5 +7,3 @@ type UserService struct {
 func NewUserService(db DB) *UserService {
 	return &UserService{db}
 }
-
-func (s *UserService) AuthenticateByEmailPassword()

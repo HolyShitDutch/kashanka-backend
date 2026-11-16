@@ -18,6 +18,7 @@ func Router(props *RouterDeps) *echo.Echo {
 	r.Logger = props.Logger
 
 	r.Use(middleware.RequestLogger())
+	r.Use(SetCustomRequestContext)
 
 	collections := CollectionController(props.DB)
 	r.GET("/", collections.Index)

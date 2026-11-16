@@ -5,8 +5,10 @@
   --color-link: var(--color-blue-600);
 }
 
-@theme dark {
-  --color-link: var(--color-blue-300);
+:root {
+  @variant dark {
+    --color-link: var(--color-blue-300);
+  }
 }
 
 a:not([class]) {

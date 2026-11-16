@@ -19,6 +19,11 @@ GOOSE_DBSTRING = "{{ env.DATABASE_URL }}"
 TEST_DATABASE = "kashanka_test"
 TEST_DATABASE_URL = "postgres://postgres:postgres@localhost/{{ env.TEST_DATABASE }}?options=-c%20Timezone%3DUTC"
 
+# Input Key Material for deriving encryption keys; this is a development value only (not a secret)
+# Generate one with:
+# openssl rand 64 | base64 -w0 | xclip -sel c
+SECRET_KEY_BASE = "GNDr4OJVLZbQgHxWf0Vd6n2B0W4yND9+QTnw0pxO/N90ST6Up6x6Tz1D2laiO5MmZQvfT6Li4wGUc5drIQqH8g=="
+
 [task_templates.create_db]
 vars = { database = "" }
 run = """

@@ -27,11 +27,14 @@ func main() {
 		os.Exit(1)
 	}
 
-	r := handlers.Router(&handlers.RouterDeps{
+	r, err := handlers.Router(&handlers.RouterDeps{
 		DB:           db,
 		Logger:       logger,
 		SessionStore: sessionStore,
 	})
+	if err != nil {
+		panic(err)
+	}
 
 	if err := r.Start(config.AppHostPort); err != nil {
 		logger.Error("Failed to start server", "error", err)

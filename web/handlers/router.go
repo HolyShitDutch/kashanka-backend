@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"errors"
 	"log/slog"
 
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -16,7 +17,15 @@ type RouterDeps struct {
 	SessionStore sessions.Store
 }
 
-func Router(props *RouterDeps) *echo.Echo {
+func (r *RouterDeps) Validate() bool {
+	return r.DB != nil && r.Logger != nil && r.SessionStore != nil
+}
+
+func Router(props *RouterDeps) (*echo.Echo, error) {
+	if !props.Validate() {
+		return nil, errors.New("invalid props")
+	}
+
 	r := echo.New()
 	r.Logger = props.Logger
 
@@ -35,5 +44,5 @@ func Router(props *RouterDeps) *echo.Echo {
 	})
 	r.GET("/webauthn/register/start", webauthn.RegisterStart)
 
-	return r
+	return r, nil
 }

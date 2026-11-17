@@ -3,9 +3,11 @@ package sessions_test
 import (
 	"bytes"
 	"testing"
+	"time"
 
 	"github.com/moroz/kashanka/internal/sessions"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestNewStore(t *testing.T) {
@@ -34,4 +36,42 @@ func TestNewStore(t *testing.T) {
 			assert.Nil(t, actual)
 		}
 	}
+}
+
+func TestSessionStoreEncDecCookie(t *testing.T) {
+	key := bytes.Repeat([]byte{0xAA}, 32)
+	store, err := sessions.NewStore(key)
+	require.NoError(t, err)
+	require.NotNil(t, store)
+
+	payload := []byte(`{"test":123}`)
+	cookie, err := store.EncryptCookie(payload)
+	assert.NoError(t, err)
+	assert.NotEmpty(t, cookie)
+
+	decrypted, err := store.DecryptCookie(cookie, time.Hour)
+	assert.NoError(t, err)
+	assert.Equal(t, payload, decrypted)
+}
+
+func TestSessionStoreEncDecSession(t *testing.T) {
+	key := bytes.Repeat([]byte{0xAA}, 32)
+	store, err := sessions.NewStore(key)
+	require.NoError(t, err)
+	require.NotNil(t, store)
+
+	value := []byte{1, 2, 3}
+
+	session := sessions.New()
+	session.Set("test", value)
+
+	cookie, err := store.EncryptSession(session)
+	assert.NoError(t, err)
+	assert.NotEmpty(t, cookie)
+
+	decrypted, err := store.DecryptSession(cookie, time.Hour)
+	assert.NoError(t, err)
+	actual, ok := decrypted.Get[[]byte]("test")
+	assert.Truef(t, ok, `Expected "test" to be present within the decoded session payload`)
+	assert.Equal(t, value, actual)
 }

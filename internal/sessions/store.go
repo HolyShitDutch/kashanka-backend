@@ -2,11 +2,9 @@ package sessions
 
 import (
 	"errors"
-	"fmt"
 	"time"
 
 	"github.com/essentialkaos/branca/v2"
-	"golang.org/x/crypto/chacha20"
 )
 
 type Store interface {
@@ -31,17 +29,12 @@ type store struct {
 var _ Store = &store{}
 
 func NewStore(key []byte) (Store, error) {
-	if len(key) != chacha20.KeySize {
-		return nil, fmt.Errorf("invalid key length for sessions.Store: want %v, got %v", chacha20.KeySize, len(key))
-	}
 	signer, err := branca.NewBranca(key)
 	if err != nil {
 		return nil, err
 	}
 
-	return &store{
-		signer: signer,
-	}, nil
+	return &store{signer: signer}, nil
 }
 
 func (s *store) EncryptCookie(payload []byte) (cookie string, err error) {

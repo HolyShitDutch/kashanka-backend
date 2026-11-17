@@ -7,6 +7,7 @@ import (
 	"github.com/moroz/kashanka/config"
 	"github.com/moroz/kashanka/internal/sessions"
 	"github.com/moroz/kashanka/internal/types"
+	"github.com/moroz/kashanka/web/helpers"
 )
 
 func SetCustomRequestContext(store sessions.Store) echo.MiddlewareFunc {
@@ -18,23 +19,20 @@ func SetCustomRequestContext(store sessions.Store) echo.MiddlewareFunc {
 	}
 }
 
-func ReadSessionCookie(store sessions.Store) echo.MiddlewareFunc {
-	return func(next echo.HandlerFunc) echo.HandlerFunc {
-		return func(c *echo.Context) error {
-			// panic if context is not set
-			ctx := c.Get("context").(*types.RequestContext)
+func ReadSessionCookie(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c *echo.Context) error {
+		ctx := helpers.GetRequestContext(c)
 
-			// ignore malformed cookie and silently continue
-			cookie, err := c.Cookie(config.SessionCookieName)
-			if err != nil {
-				return next(c)
-			}
-
-			if err := ctx.DecodeSessionFromCookie(cookie.Value, config.SessionMaxAge); err != nil {
-				slog.Info("failed to decode session from session cookie", "error", err)
-			}
-
+		// ignore malformed cookie and silently continue
+		cookie, err := c.Cookie(config.SessionCookieName)
+		if err != nil {
 			return next(c)
 		}
+
+		if err := ctx.DecodeSessionFromCookie(cookie.Value, config.SessionMaxAge); err != nil {
+			slog.Info("failed to decode session from session cookie", "error", err)
+		}
+
+		return next(c)
 	}
 }

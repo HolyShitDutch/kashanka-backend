@@ -7,6 +7,7 @@ import (
 
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/moroz/kashanka/config"
+	"github.com/moroz/kashanka/internal/sessions"
 	"github.com/moroz/kashanka/web/handlers"
 )
 
@@ -20,9 +21,16 @@ func main() {
 		os.Exit(1)
 	}
 
+	sessionStore, err := sessions.NewStore(config.SessionSigner)
+	if err != nil {
+		logger.Error("Failed to initialize session store", "error", err)
+		os.Exit(1)
+	}
+
 	r := handlers.Router(&handlers.RouterDeps{
-		DB:     db,
-		Logger: logger,
+		DB:           db,
+		Logger:       logger,
+		SessionStore: sessionStore,
 	})
 
 	if err := r.Start(config.AppHostPort); err != nil {

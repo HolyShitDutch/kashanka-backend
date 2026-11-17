@@ -1,8 +1,11 @@
 package types
 
 import (
+	"fmt"
+	"net/http"
 	"time"
 
+	"github.com/moroz/kashanka/config"
 	"github.com/moroz/kashanka/internal/sessions"
 )
 
@@ -28,5 +31,21 @@ func (c *RequestContext) DecodeSessionFromCookie(cookie string, maxAge time.Dura
 		return err
 	}
 	c.session = session
+	return nil
+}
+
+func (c *RequestContext) SaveSession(w http.ResponseWriter) error {
+	cookie, err := c.sessionStore.EncryptSession(c.session)
+	if err != nil {
+		return fmt.Errorf("failed to encode session cookie: %w", err)
+	}
+
+	http.SetCookie(w, &http.Cookie{
+		Name:     config.SessionCookieName,
+		Value:    cookie,
+		Path:     "/",
+		HttpOnly: true,
+		Secure:   true,
+	})
 	return nil
 }

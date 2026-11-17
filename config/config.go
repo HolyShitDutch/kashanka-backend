@@ -8,6 +8,7 @@ import (
 	"log"
 	"net"
 	"os"
+	"strings"
 	"time"
 
 	"golang.org/x/crypto/chacha20"
@@ -53,7 +54,7 @@ const SessionCookieName = "_kashanka_session"
 const SessionMaxAge = 24 * time.Hour
 
 var AppHost = GetenvWithDefault("HOST", "::")
-var AppPort = GetenvWithDefault("PORT", "3000")
+var AppPort = GetenvWithDefault("PORT", "5000")
 var AppHostPort = net.JoinHostPort(AppHost, AppPort)
 var DatabaseUrl = MustGetenv("DATABASE_URL")
 
@@ -61,3 +62,9 @@ var TestDatabaseUrl = os.Getenv("TEST_DATABASE_URL")
 var ViteDevServer = GetenvWithDefault("VITE_DEV_SERVER", "https://assets.localhost")
 var SecretKeyBase = MustGetenvBase64("SECRET_KEY_BASE")
 var SessionSigner = MustDeriveKey("kashanka/v1/session-signer", chacha20.KeySize)
+
+// Webauthn Settings
+const RPDisplayName = "卡閃卡 CardFlashCard"
+
+var RPID = GetenvWithDefault("RELYING_PARTY_ID", "kashanka.localhost")
+var RPOrigins = strings.Split(GetenvWithDefault("RELYING_PARTY_ORIGINS", "https://kashanka.localhost"), ",")

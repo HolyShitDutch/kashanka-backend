@@ -42,6 +42,7 @@ func Router(props *RouterDeps) (*echo.Echo, error) {
 		RPID:      config.RPID,
 		RPOrigins: config.RPOrigins,
 	})
+	r.GET("/sign-up", webauthn.Register)
 	r.GET("/webauthn/register/start", webauthn.RegisterStart)
 
 	return r, nil

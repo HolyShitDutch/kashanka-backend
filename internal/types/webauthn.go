@@ -18,7 +18,7 @@ func NewWebAuthnUser() webauthn.User {
 	id := make([]byte, 64)
 	rand.Read(id)
 	return &webAuthnUser{
-		id: id, displayName: "",
+		id: id, displayName: "Test User",
 	}
 }
 

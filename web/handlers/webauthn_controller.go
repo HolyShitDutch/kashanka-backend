@@ -11,6 +11,7 @@ import (
 	"github.com/moroz/kashanka/internal/types"
 	"github.com/moroz/kashanka/services"
 	"github.com/moroz/kashanka/web/helpers"
+	tmpl "github.com/moroz/kashanka/web/templates/webauthn"
 )
 
 type webauthnController struct {
@@ -37,6 +38,10 @@ func WebauthnController(deps *WebauthnControllerDeps) *webauthnController {
 	}
 }
 
+func (cc *webauthnController) Register(c *echo.Context) error {
+	return helpers.Render(c, 200, tmpl.Register())
+}
+
 func (cc *webauthnController) RegisterStart(c *echo.Context) error {
 	ctx := helpers.GetRequestContext(c)
 
@@ -49,7 +54,7 @@ func (cc *webauthnController) RegisterStart(c *echo.Context) error {
 	)
 
 	opts := []webauthn.RegistrationOption{
-		webauthn.WithResidentKeyRequirement(protocol.ResidentKeyRequirementRequired),
+		webauthn.WithResidentKeyRequirement(protocol.ResidentKeyRequirementPreferred),
 	}
 
 	if creation, sessionData, err = cc.webauthn.BeginMediatedRegistration(user, protocol.MediationDefault, opts...); err != nil {

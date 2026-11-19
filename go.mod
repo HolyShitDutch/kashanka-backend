@@ -16,6 +16,7 @@ require (
 )
 
 require (
+	github.com/descope/virtualwebauthn v1.0.5 // indirect
 	github.com/go-viper/mapstructure/v2 v2.5.0 // indirect
 	github.com/go-webauthn/x v0.3.1 // indirect
 	github.com/golang-jwt/jwt/v5 v5.3.1 // indirect

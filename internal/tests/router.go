@@ -1,8 +1,8 @@
 package tests
 
 import (
+	"bytes"
 	"log/slog"
-	"os"
 	"testing"
 
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -14,7 +14,8 @@ import (
 func Router(t *testing.T, db *pgxpool.Pool, store sessions.Store) *echo.Echo {
 	t.Helper()
 
-	logger := slog.New(slog.NewJSONHandler(os.Stderr, nil))
+	var logOutlet bytes.Buffer
+	logger := slog.New(slog.NewJSONHandler(&logOutlet, nil))
 
 	router, err := handlers.Router(&handlers.RouterDeps{
 		DB:           db,

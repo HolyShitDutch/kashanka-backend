@@ -1,12 +1,14 @@
 package handlers_test
 
 import (
+	"fmt"
 	"io"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
 	"testing"
 
+	"github.com/descope/virtualwebauthn"
 	"github.com/moroz/kashanka/internal/tests"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -33,4 +35,17 @@ func TestWebauthnController_RegisterStart(t *testing.T) {
 	response, err := io.ReadAll(resp.Body)
 	require.NoError(t, err)
 	assert.NotEmpty(t, response)
+
+	rp := tests.RelyingParty()
+	authenticator := virtualwebauthn.NewAuthenticatorWithOptions(virtualwebauthn.AuthenticatorOptions{
+		Transports: []virtualwebauthn.Transport{virtualwebauthn.TransportUSB, virtualwebauthn.TransportInternal},
+	})
+
+	credential := virtualwebauthn.NewCredential(virtualwebauthn.KeyTypeEC2)
+
+	parsedAttestationOptions, err := virtualwebauthn.ParseAttestationOptions(string(response))
+	require.NoError(t, err)
+
+	attestationResponse := virtualwebauthn.CreateAttestationResponse(rp, authenticator, credential, *parsedAttestationOptions)
+	fmt.Println(attestationResponse)
 }

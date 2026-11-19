@@ -3,14 +3,35 @@
 
 @theme {
   --color-link: var(--color-blue-600);
+  --color-surface: var(--color-slate-100);
+  --color-paper: var(--color-white);
+  --color-primary: var(--color-orange-400);
 }
 
 :root {
   @variant dark {
     --color-link: var(--color-blue-300);
+    --color-surface: var(--color-gray-800);
+    --color-paper: var(--color-slate-950);
+    --color-primary: var(--color-stone-800);
   }
 }
 
-a:not([class]) {
-  @apply underline text-link;
+@layer base {
+  body {
+    @apply bg-paper;
+  }
+  a:not([class]) {
+    @apply text-link underline;
+  }
+}
+
+@layer components {
+  .card {
+    @apply rounded border bg-surface p-4;
+  }
+
+  .button {
+    @apply flex h-10 cursor-pointer items-center justify-center gap-2 rounded border bg-primary px-4 py-2 text-center font-semibold text-white;
+  }
 }

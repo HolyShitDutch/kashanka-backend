@@ -1,3 +1,7 @@
 {
-  "ignorePatterns": []
+  "ignorePatterns": [],
+  "sortTailwindcss": {
+    "stylesheet": "./src/style.css",
+    "functions": ["Class", "clsx"]
+  }
 }

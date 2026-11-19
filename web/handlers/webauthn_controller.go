@@ -11,7 +11,6 @@ import (
 	"github.com/moroz/kashanka/internal/types"
 	"github.com/moroz/kashanka/services"
 	"github.com/moroz/kashanka/web/helpers"
-	tmpl "github.com/moroz/kashanka/web/templates/webauthn"
 )
 
 type webauthnController struct {
@@ -36,10 +35,6 @@ func WebauthnController(deps *WebauthnControllerDeps) *webauthnController {
 		db:       deps.DB,
 		webauthn: w,
 	}
-}
-
-func (cc *webauthnController) Register(c *echo.Context) error {
-	return helpers.Render(c, 200, tmpl.Register())
 }
 
 func (cc *webauthnController) RegisterStart(c *echo.Context) error {

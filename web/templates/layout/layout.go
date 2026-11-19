@@ -25,3 +25,28 @@ func RootLayout(title string, children ...Node) Node {
 		Body(Group(children)),
 	)
 }
+
+func AuthLayout(title string, children ...Node) Node {
+	return RootLayout(title, Div(
+		Class("h-screen grid place-items-center"),
+		Div(
+			Class("grid gap-4 justify-center -mt-12"),
+			A(
+				Class("text-center flex justify-center items-center"),
+				Href("/"),
+				Picture(
+					Source(SrcSet("/assets/logo-dark.svg"), Attr("media", "(prefers-color-scheme: dark)")),
+					Img(
+						Class("h-24"),
+						SrcSet("/assets/logo-light.svg"),
+						Src(""),
+					),
+				),
+			),
+			Div(
+				Class("card w-100 text-center"),
+				Group(children),
+			),
+		),
+	))
+}

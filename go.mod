@@ -3,6 +3,8 @@ module github.com/moroz/kashanka
 go 1.27.3
 
 require (
+	github.com/Oudwins/tailwind-merge-go v0.2.3
+	github.com/descope/virtualwebauthn v1.0.5
 	github.com/essentialkaos/branca/v2 v2.0.9
 	github.com/fxamacker/cbor/v2 v2.10.0
 	github.com/go-webauthn/webauthn v0.18.2
@@ -16,7 +18,6 @@ require (
 )
 
 require (
-	github.com/descope/virtualwebauthn v1.0.5 // indirect
 	github.com/go-viper/mapstructure/v2 v2.5.0 // indirect
 	github.com/go-webauthn/x v0.3.1 // indirect
 	github.com/golang-jwt/jwt/v5 v5.3.1 // indirect

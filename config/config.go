@@ -53,10 +53,14 @@ func MustDeriveKey(info string, keySize int) []byte {
 const SessionCookieName = "_kashanka_session"
 const SessionMaxAge = 24 * time.Hour
 
+var AppEnv = GetenvWithDefault("APP_ENV", "dev")
 var AppHost = GetenvWithDefault("HOST", "::")
 var AppPort = GetenvWithDefault("PORT", "5000")
 var AppHostPort = net.JoinHostPort(AppHost, AppPort)
 var DatabaseUrl = MustGetenv("DATABASE_URL")
+
+var IsProd = AppEnv == "prod"
+var IsDev = AppEnv == "dev"
 
 var TestDatabaseUrl = os.Getenv("TEST_DATABASE_URL")
 var ViteDevServer = GetenvWithDefault("VITE_DEV_SERVER", "https://assets.localhost")

@@ -6,6 +6,8 @@ function bufferToBase64Url(buffer: ArrayBuffer): string {
   return new Uint8Array(buffer).toBase64({ alphabet: "base64url" });
 }
 
+type ExistingCredential = { id: string };
+
 async function getCredentialCreationOptions(): Promise<CredentialCreationOptions> {
   const { publicKey } = await fetch("/webauthn/register/start", {
     credentials: "include",
@@ -19,7 +21,7 @@ async function getCredentialCreationOptions(): Promise<CredentialCreationOptions
         ...publicKey.user,
         id: base64UrlToBuffer(publicKey.user.id),
       },
-      excludeCredentials: publicKey.excludeCredentials?.map((c) => ({
+      excludeCredentials: publicKey.excludeCredentials?.map((c: ExistingCredential) => ({
         ...c,
         id: base64UrlToBuffer(c.id),
       })),
@@ -35,6 +37,7 @@ async function finalizeCredentialRegistration(credential: PublicKeyCredential) {
     },
     method: "POST",
   });
+  return response.json();
 }
 
 function serializeCredential(credential: PublicKeyCredential) {

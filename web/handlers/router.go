@@ -37,13 +37,20 @@ func Router(props *RouterDeps) (*echo.Echo, error) {
 	r.GET("/", collections.Index)
 	r.GET("/collections/:slug", collections.Show)
 
+	registrations := UserRegistrationController()
+	r.GET("/sign-up", registrations.New)
+
 	webauthn := WebauthnController(&WebauthnControllerDeps{
 		DB:        props.DB,
 		RPID:      config.RPID,
 		RPOrigins: config.RPOrigins,
 	})
-	r.GET("/sign-up", webauthn.Register)
 	r.GET("/webauthn/register/start", webauthn.RegisterStart)
+
+	if !config.IsProd {
+		r.IPExtractor = echo.ExtractIPDirect()
+		r.Static("/assets", "assets/public/assets")
+	}
 
 	return r, nil
 }

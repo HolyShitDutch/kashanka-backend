@@ -8,8 +8,7 @@ import (
 )
 
 type webAuthnUser struct {
-	id          []byte
-	displayName string
+	id []byte
 }
 
 var _ webauthn.User = &webAuthnUser{}
@@ -17,9 +16,7 @@ var _ webauthn.User = &webAuthnUser{}
 func NewWebAuthnUser() webauthn.User {
 	id := make([]byte, 64)
 	rand.Read(id)
-	return &webAuthnUser{
-		id: id, displayName: "Test User",
-	}
+	return &webAuthnUser{id}
 }
 
 func (u *webAuthnUser) WebAuthnID() []byte {
@@ -31,9 +28,9 @@ func (u *webAuthnUser) WebAuthnCredentials() []webauthn.Credential {
 }
 
 func (u *webAuthnUser) WebAuthnName() string {
-	return u.displayName
+	return ""
 }
 
 func (u *webAuthnUser) WebAuthnDisplayName() string {
-	return u.displayName
+	return ""
 }

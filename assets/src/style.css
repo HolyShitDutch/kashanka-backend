@@ -6,6 +6,7 @@
   --color-surface: var(--color-slate-100);
   --color-paper: var(--color-white);
   --color-primary: var(--color-orange-400);
+  --color-muted-fg: var(--color-slate-600);
 }
 
 :root {
@@ -14,6 +15,7 @@
     --color-surface: var(--color-gray-800);
     --color-paper: var(--color-slate-950);
     --color-primary: var(--color-stone-800);
+    --color-muted-fg: var(--color-slate-400);
   }
 }
 
@@ -33,5 +35,22 @@
 
   .button {
     @apply flex h-10 cursor-pointer items-center justify-center gap-2 rounded border bg-primary px-4 py-2 text-center font-semibold text-white;
+  }
+
+  .input-field {
+    @apply grid w-full justify-stretch gap-2 text-left;
+
+    span {
+      @apply leading-tight font-semibold;
+    }
+  }
+
+  .input {
+    input:not([type])&,
+    input[type="text"]&,
+    input[type="password"]&,
+    input[type="email"]& {
+      @apply h-10 rounded border px-3 dark:bg-slate-700;
+    }
   }
 }

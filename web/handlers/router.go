@@ -39,6 +39,7 @@ func Router(props *RouterDeps) (*echo.Echo, error) {
 
 	registrations := UserRegistrationController()
 	r.GET("/sign-up", registrations.New)
+	r.GET("/sign-up/passkey", registrations.Passkey)
 
 	webauthn := WebauthnController(&WebauthnControllerDeps{
 		DB:        props.DB,

@@ -15,3 +15,7 @@ func UserRegistrationController() *userRegistrationController {
 func (cc *userRegistrationController) New(c *echo.Context) error {
 	return helpers.Render(c, 200, auth.SignUp())
 }
+
+func (cc *userRegistrationController) Passkey(c *echo.Context) error {
+	return helpers.Render(c, 200, auth.Passkey())
+}

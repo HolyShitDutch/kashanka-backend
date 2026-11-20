@@ -42,3 +42,37 @@ func SignUp() Node {
 		),
 	)
 }
+
+func Passkey() Node {
+	return layout.AuthLayout("Sign up with passkey",
+		layout.ScriptEntryPoint("src/webauthn.ts"),
+		components.PageTitle("Sign up with passkey"),
+		Form(
+			ID("webauthn-registration"),
+			Class("grid gap-4"),
+			Label(
+				Class("input-field"),
+				Span(
+					Text("What should we call you? "),
+					Span(
+						Class("text-muted-fg text-sm"),
+						Text("(optional)"),
+					),
+				),
+				Input(
+					Class("input"),
+					AutoFocus(),
+					Type("text"), Name("display_name"),
+				),
+				Span(
+					Class("text-xs leading-tight font-normal"),
+					Text("This name will be stored in your passkey manager. If you leave this field empty, the app will generate a random name, e.g. Rabid Raccoon."),
+				),
+			),
+			Button(
+				Class("button w-full"),
+				Text("Create a passkey"),
+			),
+		),
+	)
+}

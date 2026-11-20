@@ -29,7 +29,7 @@ async function getCredentialCreationOptions(): Promise<CredentialCreationOptions
   };
 }
 
-async function finalizeCredentialRegistration(credential: PublicKeyCredential) {
+export async function finalizeCredentialRegistration(credential: PublicKeyCredential) {
   const response = await fetch("/webauthn/registration/finalize", {
     body: JSON.stringify(serializeCredential(credential)),
     headers: {
@@ -57,15 +57,15 @@ function serializeCredential(credential: PublicKeyCredential) {
 }
 
 function initWebauthnRegistration() {
-  const button = document.querySelector("#webauthn-registration-start");
-  if (!button) return;
+  const form = document.querySelector("form#webauthn-registration");
+  if (!form) return;
 
-  button.addEventListener("click", async () => {
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
     const options = await getCredentialCreationOptions();
     const credential = await navigator.credentials.create(options);
     if (!credential) return;
-
-    console.log(credential);
   });
 }
 

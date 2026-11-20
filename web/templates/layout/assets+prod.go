@@ -26,6 +26,14 @@ func AssetEntryPoint() Node {
 	}
 }
 
+func ScriptEntryPoint(entrypoint string) Node {
+	entry, ok := manifest[entrypoint]
+	if !ok {
+		return HTML(`<!-- missing manifest entry for entrypoint "` + entrypoint + `" -->`)
+	}
+	return Script(Type("module"), Src("/"+entry.File))
+}
+
 type ViteManifest map[string]ViteManifestObject
 
 type ViteManifestObject struct {

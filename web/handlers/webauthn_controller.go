@@ -8,6 +8,7 @@ import (
 	"github.com/go-webauthn/webauthn/webauthn"
 	"github.com/labstack/echo/v5"
 	"github.com/moroz/kashanka/config"
+	"github.com/moroz/kashanka/internal/requests"
 	"github.com/moroz/kashanka/internal/types"
 	"github.com/moroz/kashanka/services"
 	"github.com/moroz/kashanka/web/helpers"
@@ -37,10 +38,23 @@ func WebauthnController(deps *WebauthnControllerDeps) *webauthnController {
 	}
 }
 
+// GET /.well-known/webauthn
+func (cc *webauthnController) WellKnown(c *echo.Context) error {
+	return helpers.RenderJSON(c, 200, map[string][]string{
+		"origins": cc.webauthn.Config.RPOrigins,
+	})
+}
+
+// POST /webauthn/register/start
 func (cc *webauthnController) RegisterStart(c *echo.Context) error {
 	ctx := helpers.GetRequestContext(c)
+	var params requests.WebauthnRegisterStartRequest
+	if err := c.Bind(&params); err != nil {
+		slog.Error("Failed to parse request", "error", err)
+		return echo.ErrBadRequest
+	}
 
-	user := types.NewWebAuthnUser()
+	user := types.NewWebAuthnUser(params.DisplayName)
 
 	var (
 		creation    *protocol.CredentialCreation

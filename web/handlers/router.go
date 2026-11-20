@@ -46,7 +46,8 @@ func Router(props *RouterDeps) (*echo.Echo, error) {
 		RPID:      config.RPID,
 		RPOrigins: config.RPOrigins,
 	})
-	r.GET("/webauthn/register/start", webauthn.RegisterStart)
+	r.GET("/.well-known/webauthn", webauthn.WellKnown)
+	r.POST("/webauthn/register/start", webauthn.RegisterStart)
 
 	if !config.IsProd {
 		r.IPExtractor = echo.ExtractIPDirect()

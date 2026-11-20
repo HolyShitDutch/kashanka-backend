@@ -8,9 +8,16 @@ function bufferToBase64Url(buffer: ArrayBuffer): string {
 
 type ExistingCredential = { id: string };
 
-async function getCredentialCreationOptions(): Promise<CredentialCreationOptions> {
+async function getCredentialCreationOptions(
+  displayName: string,
+): Promise<CredentialCreationOptions> {
   const { publicKey } = await fetch("/webauthn/register/start", {
     credentials: "include",
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ display_name: displayName }),
   }).then((resp) => resp.json());
 
   return {
@@ -62,6 +69,8 @@ function initWebauthnRegistration() {
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
+
+    const name = form.querySelector("input[name=display_name]")?.value;
 
     const options = await getCredentialCreationOptions();
     const credential = await navigator.credentials.create(options);

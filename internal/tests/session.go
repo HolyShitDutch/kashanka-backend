@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/moroz/kashanka/internal/sessions"
+	"github.com/HolyShitDutch/kashanka/internal/sessions"
 )
 
 func SessionStore(t *testing.T) sessions.Store {

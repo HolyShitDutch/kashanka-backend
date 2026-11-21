@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v5/pgtype"
-	"github.com/moroz/kashanka/internal/dbtypes"
+	"github.com/HolyShitDutch/kashanka/internal/dbtypes"
 	"uuid"
 )
 

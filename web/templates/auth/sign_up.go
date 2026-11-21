@@ -1,9 +1,9 @@
 package auth
 
 import (
-	"github.com/moroz/kashanka/web/templates/components"
-	"github.com/moroz/kashanka/web/templates/icons"
-	"github.com/moroz/kashanka/web/templates/layout"
+	"github.com/HolyShitDutch/kashanka/web/templates/components"
+	"github.com/HolyShitDutch/kashanka/web/templates/icons"
+	"github.com/HolyShitDutch/kashanka/web/templates/layout"
 	. "maragu.dev/gomponents"
 	. "maragu.dev/gomponents/html"
 )

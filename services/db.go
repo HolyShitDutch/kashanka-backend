@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/jackc/pgx/v5"
-	"github.com/moroz/kashanka/db/queries"
+	"github.com/HolyShitDutch/kashanka/db/queries"
 )
 
 type DB interface {

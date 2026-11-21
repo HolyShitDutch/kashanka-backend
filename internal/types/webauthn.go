@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/go-webauthn/webauthn/webauthn"
-	"github.com/moroz/kashanka/internal/names"
+	"github.com/HolyShitDutch/kashanka/internal/names"
 )
 
 type WebAuthnUser struct {

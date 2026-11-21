@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/moroz/kashanka/internal/names"
+	"github.com/HolyShitDutch/kashanka/internal/names"
 	"github.com/stretchr/testify/require"
 )
 

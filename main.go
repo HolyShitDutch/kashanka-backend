@@ -6,9 +6,9 @@ import (
 	"os"
 
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/moroz/kashanka/config"
-	"github.com/moroz/kashanka/internal/sessions"
-	"github.com/moroz/kashanka/web/handlers"
+	"github.com/HolyShitDutch/kashanka/config"
+	"github.com/HolyShitDutch/kashanka/internal/sessions"
+	"github.com/HolyShitDutch/kashanka/web/handlers"
 )
 
 func main() {

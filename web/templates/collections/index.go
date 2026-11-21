@@ -3,9 +3,9 @@ package collections
 import (
 	"fmt"
 
-	"github.com/moroz/kashanka/db/queries"
-	"github.com/moroz/kashanka/web/templates/components"
-	"github.com/moroz/kashanka/web/templates/layout"
+	"github.com/HolyShitDutch/kashanka/db/queries"
+	"github.com/HolyShitDutch/kashanka/web/templates/components"
+	"github.com/HolyShitDutch/kashanka/web/templates/layout"
 	. "maragu.dev/gomponents"
 	. "maragu.dev/gomponents/html"
 )

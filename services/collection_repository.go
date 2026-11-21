@@ -3,8 +3,8 @@ package services
 import (
 	"context"
 
-	"github.com/moroz/kashanka/db/queries"
-	"github.com/moroz/kashanka/internal/types"
+	"github.com/HolyShitDutch/kashanka/db/queries"
+	"github.com/HolyShitDutch/kashanka/internal/types"
 )
 
 type CollectionRepository struct {

@@ -14,7 +14,7 @@ import (
 
 	"github.com/grailbio/base/tsv"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/moroz/kashanka/config"
+	"github.com/HolyShitDutch/kashanka/config"
 )
 
 type SeedRow struct {

@@ -63,7 +63,7 @@ var IsDev = AppEnv == "dev"
 var TestDatabaseUrl = os.Getenv("TEST_DATABASE_URL")
 var ViteDevServer = GetenvWithDefault("VITE_DEV_SERVER", "https://assets.localhost")
 var SecretKeyBase = MustGetenvBase64("SECRET_KEY_BASE")
-var SessionEncryptionKey = MustDeriveKey(SecretKeyBase, keyDerivationSalt, "github.com/moroz/kashanka-backend 2026-11 session encryption key", chacha20.KeySize)
+var SessionEncryptionKey = MustDeriveKey(SecretKeyBase, keyDerivationSalt, "github.com/HolyShitDutch/kashanka-backend 2026-11 session encryption key", chacha20.KeySize)
 
 // Webauthn Settings
 const RPDisplayName = "卡閃卡 CardFlashCard"

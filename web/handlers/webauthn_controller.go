@@ -7,11 +7,11 @@ import (
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/go-webauthn/webauthn/webauthn"
 	"github.com/labstack/echo/v5"
-	"github.com/moroz/kashanka/config"
-	"github.com/moroz/kashanka/internal/requests"
-	"github.com/moroz/kashanka/internal/types"
-	"github.com/moroz/kashanka/services"
-	"github.com/moroz/kashanka/web/helpers"
+	"github.com/HolyShitDutch/kashanka/config"
+	"github.com/HolyShitDutch/kashanka/internal/requests"
+	"github.com/HolyShitDutch/kashanka/internal/types"
+	"github.com/HolyShitDutch/kashanka/services"
+	"github.com/HolyShitDutch/kashanka/web/helpers"
 )
 
 type webauthnController struct {

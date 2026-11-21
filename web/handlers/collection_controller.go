@@ -6,10 +6,10 @@ import (
 	"log/slog"
 
 	"github.com/labstack/echo/v5"
-	"github.com/moroz/kashanka/db/queries"
-	"github.com/moroz/kashanka/services"
-	"github.com/moroz/kashanka/web/helpers"
-	"github.com/moroz/kashanka/web/templates/collections"
+	"github.com/HolyShitDutch/kashanka/db/queries"
+	"github.com/HolyShitDutch/kashanka/services"
+	"github.com/HolyShitDutch/kashanka/web/helpers"
+	"github.com/HolyShitDutch/kashanka/web/templates/collections"
 )
 
 type collectionController struct {

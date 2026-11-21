@@ -5,7 +5,7 @@ package layout
 import (
 	"net/url"
 
-	"github.com/moroz/kashanka/config"
+	"github.com/HolyShitDutch/kashanka/config"
 	. "maragu.dev/gomponents"
 	. "maragu.dev/gomponents/html"
 )

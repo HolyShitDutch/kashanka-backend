@@ -1,10 +1,10 @@
 package collections
 
 import (
-	"github.com/moroz/kashanka/db/queries"
-	"github.com/moroz/kashanka/internal/types"
-	"github.com/moroz/kashanka/web/templates/components"
-	"github.com/moroz/kashanka/web/templates/layout"
+	"github.com/HolyShitDutch/kashanka/db/queries"
+	"github.com/HolyShitDutch/kashanka/internal/types"
+	"github.com/HolyShitDutch/kashanka/web/templates/components"
+	"github.com/HolyShitDutch/kashanka/web/templates/layout"
 
 	. "maragu.dev/gomponents"
 

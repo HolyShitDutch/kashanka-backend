@@ -6,8 +6,8 @@ import (
 	"net/url"
 	"testing"
 
-	"github.com/moroz/kashanka/config"
-	"github.com/moroz/kashanka/internal/sessions"
+	"github.com/HolyShitDutch/kashanka/config"
+	"github.com/HolyShitDutch/kashanka/internal/sessions"
 )
 
 func ClientWithSession(t *testing.T, origin *url.URL, store sessions.Store, payload sessions.Session) *http.Client {

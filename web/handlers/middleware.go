@@ -4,10 +4,10 @@ import (
 	"log/slog"
 
 	"github.com/labstack/echo/v5"
-	"github.com/moroz/kashanka/config"
-	"github.com/moroz/kashanka/internal/sessions"
-	"github.com/moroz/kashanka/internal/types"
-	"github.com/moroz/kashanka/web/helpers"
+	"github.com/HolyShitDutch/kashanka/config"
+	"github.com/HolyShitDutch/kashanka/internal/sessions"
+	"github.com/HolyShitDutch/kashanka/internal/types"
+	"github.com/HolyShitDutch/kashanka/web/helpers"
 )
 
 func SetCustomRequestContext(store sessions.Store) echo.MiddlewareFunc {

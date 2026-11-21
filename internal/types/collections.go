@@ -1,7 +1,7 @@
 package types
 
 import (
-	"github.com/moroz/kashanka/db/queries"
+	"github.com/HolyShitDutch/kashanka/db/queries"
 )
 
 type CollectionDTO struct {

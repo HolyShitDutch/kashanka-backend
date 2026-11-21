@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/go-webauthn/webauthn/webauthn"
-	"github.com/moroz/kashanka/internal/sessions"
-	"github.com/moroz/kashanka/internal/tests"
+	"github.com/HolyShitDutch/kashanka/internal/sessions"
+	"github.com/HolyShitDutch/kashanka/internal/tests"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

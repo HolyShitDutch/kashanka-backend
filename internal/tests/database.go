@@ -6,8 +6,8 @@ import (
 	"testing"
 
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/moroz/kashanka/config"
-	"github.com/moroz/kashanka/internal/migrate"
+	"github.com/HolyShitDutch/kashanka/config"
+	"github.com/HolyShitDutch/kashanka/internal/migrate"
 )
 
 func Database(t *testing.T) *pgxpool.Pool {

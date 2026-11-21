@@ -10,8 +10,8 @@ import (
 	"testing"
 
 	"github.com/descope/virtualwebauthn"
-	"github.com/moroz/kashanka/internal/requests"
-	"github.com/moroz/kashanka/internal/tests"
+	"github.com/HolyShitDutch/kashanka/internal/requests"
+	"github.com/HolyShitDutch/kashanka/internal/tests"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

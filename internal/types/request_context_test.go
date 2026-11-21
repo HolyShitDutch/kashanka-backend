@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/moroz/kashanka/internal/sessions"
-	"github.com/moroz/kashanka/internal/types"
+	"github.com/HolyShitDutch/kashanka/internal/sessions"
+	"github.com/HolyShitDutch/kashanka/internal/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

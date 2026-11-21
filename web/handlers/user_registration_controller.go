@@ -2,8 +2,8 @@ package handlers
 
 import (
 	"github.com/labstack/echo/v5"
-	"github.com/moroz/kashanka/web/helpers"
-	"github.com/moroz/kashanka/web/templates/auth"
+	"github.com/HolyShitDutch/kashanka/web/helpers"
+	"github.com/HolyShitDutch/kashanka/web/templates/auth"
 )
 
 type userRegistrationController struct{}

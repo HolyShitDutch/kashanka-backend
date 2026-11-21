@@ -45,7 +45,7 @@ overrides:
 
       - column: "cards.answers"
         go_type:
-          import: github.com/moroz/kashanka/internal/dbtypes
+          import: github.com/HolyShitDutch/kashanka/internal/dbtypes
           type: "AnswerMap"
 
       - column: "cards.answer_languages"

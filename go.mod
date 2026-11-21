@@ -1,4 +1,4 @@
-module github.com/moroz/kashanka
+module github.com/HolyShitDutch/kashanka
 
 go 1.27.3
 

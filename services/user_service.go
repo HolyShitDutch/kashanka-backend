@@ -20,9 +20,8 @@ func NewUserService(db DB) *UserService {
 func (s *UserService) RegisterUserWithCredential(ctx context.Context, userData *types.WebAuthnUser, credential *webauthn.Credential) (*queries.User, error) {
 	tx, err := s.db.Begin(ctx)
 	if err != nil {
-		return fmt.Errorf("failed to begin transaction: %w", err)
+		return nil, fmt.Errorf("failed to begin transaction: %w", err)
 	}
 
 	defer tx.Rollback(ctx)
-
 }

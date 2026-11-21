@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/HolyShitDutch/kashanka/db/queries"
+	"github.com/HolyShitDutch/kashanka/internal/types"
 	"github.com/go-webauthn/webauthn/webauthn"
-	"github.com/moroz/kashanka/db/queries"
-	"github.com/moroz/kashanka/internal/types"
 )
 
 type UserService struct {

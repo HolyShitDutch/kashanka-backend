@@ -39,7 +39,8 @@ func MustGetenvBase64(name string) []byte {
 	return binary
 }
 
-var keyDerivationSalt, err = hex.DecodeString("053754807554f8a549896318ffba62abea48aa4c5006f949fcf9cf918270ef8cd57dfbdda5432cbb06867a3d8e2eb074c71febac5ba0f6efb357334b58e98801")
+var keyDerivationSalt, _ = hex.DecodeString("053754807554f8a549896318ffba62abea48aa4c5006f949fcf9cf918270ef8cd57dfbdda5432cbb06867a3d8e2eb074c71febac5ba0f6efb357334b58e98801")
+var secretKeyBase = MustGetenvBase64("SECRET_KEY_BASE")
 
 func MustDeriveKey(secretKeyBase, salt []byte, info string, keySize int) []byte {
 	key := make([]byte, keySize)
@@ -62,8 +63,9 @@ var IsDev = AppEnv == "dev"
 
 var TestDatabaseUrl = os.Getenv("TEST_DATABASE_URL")
 var ViteDevServer = GetenvWithDefault("VITE_DEV_SERVER", "https://assets.localhost")
-var SecretKeyBase = MustGetenvBase64("SECRET_KEY_BASE")
-var SessionEncryptionKey = MustDeriveKey(SecretKeyBase, keyDerivationSalt, "github.com/HolyShitDutch/kashanka-backend 2026-11 session encryption key", chacha20.KeySize)
+var SessionEncryptionKey = MustDeriveKey(secretKeyBase, keyDerivationSalt, "github.com/HolyShitDutch/kashanka-backend 2026-11 session encryption key", chacha20.KeySize)
+var DatabaseEncryptionKey = MustDeriveKey(secretKeyBase, keyDerivationSalt, "github.com/HolyShitDutch/kashanka-backend 2026-11 database encryption key", chacha20.KeySize)
+var HMACKey = MustDeriveKey(secretKeyBase, keyDerivationSalt, "github.com/HolyShitDutch/kashanka-backend 2026-11 email hmac key", 32)
 
 // Webauthn Settings
 const RPDisplayName = "卡閃卡 CardFlashCard"

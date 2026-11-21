@@ -5,15 +5,24 @@ import (
 	"log/slog"
 	"os"
 
-	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/HolyShitDutch/kashanka/config"
+	"github.com/HolyShitDutch/kashanka/internal/crypto"
 	"github.com/HolyShitDutch/kashanka/internal/sessions"
 	"github.com/HolyShitDutch/kashanka/web/handlers"
+	"github.com/bincyber/go-sqlcrypter"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 func main() {
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 	slog.SetDefault(logger)
+
+	crypterer, err := crypto.NewEncryptionProvider(config.DatabaseEncryptionKey)
+	if err != nil {
+		logger.Error("Failed to set up database encryption", "error", err)
+		os.Exit(1)
+	}
+	sqlcrypter.Init(crypterer)
 
 	db, err := pgxpool.New(context.Background(), config.DatabaseUrl)
 	if err != nil {

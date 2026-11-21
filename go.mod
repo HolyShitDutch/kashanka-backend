@@ -4,9 +4,9 @@ go 1.27.3
 
 require (
 	github.com/Oudwins/tailwind-merge-go v0.2.3
+	github.com/bincyber/go-sqlcrypter v0.4.0
 	github.com/descope/virtualwebauthn v1.0.5
 	github.com/essentialkaos/branca/v2 v2.0.9
-	github.com/fxamacker/cbor/v2 v2.10.0
 	github.com/go-webauthn/webauthn v0.18.2
 	github.com/grailbio/base v0.0.11
 	github.com/jackc/pgx/v5 v5.13.0
@@ -14,11 +14,12 @@ require (
 	github.com/pressly/goose/v3 v3.30.1
 	github.com/stretchr/testify v1.12.1
 	golang.org/x/crypto v0.59.0
+	lukechampine.com/blake3 v1.5.1
 	maragu.dev/gomponents v1.4.0
 )
 
 require (
-	github.com/bincyber/go-sqlcrypter v0.4.0 // indirect
+	github.com/fxamacker/cbor/v2 v2.10.0 // indirect
 	github.com/go-viper/mapstructure/v2 v2.5.0 // indirect
 	github.com/go-webauthn/x v0.3.1 // indirect
 	github.com/golang-jwt/jwt/v5 v5.3.1 // indirect
@@ -42,7 +43,6 @@ require (
 	golang.org/x/text v0.44.0 // indirect
 	golang.org/x/time v0.15.0 // indirect
 	gorm.io/gorm v1.31.2 // indirect
-	lukechampine.com/blake3 v1.5.1 // indirect
 	v.io v0.1.15 // indirect
 	v.io/x/lib v0.1.7 // indirect
 )

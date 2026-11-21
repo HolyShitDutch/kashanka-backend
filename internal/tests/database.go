@@ -1,17 +1,26 @@
 package tests
 
 import (
+	"bytes"
 	"net/url"
 	"strings"
 	"testing"
 
-	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/HolyShitDutch/kashanka/config"
+	"github.com/HolyShitDutch/kashanka/internal/crypto"
 	"github.com/HolyShitDutch/kashanka/internal/migrate"
+	"github.com/bincyber/go-sqlcrypter"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 func Database(t *testing.T) *pgxpool.Pool {
 	t.Helper()
+
+	crypterer, err := crypto.NewEncryptionProvider(bytes.Repeat([]byte{0xAA}, 32))
+	if err != nil {
+		t.Fatal(err)
+	}
+	sqlcrypter.Init(crypterer)
 
 	parsed, err := url.Parse(config.TestDatabaseUrl)
 	if err != nil {

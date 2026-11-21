@@ -9,8 +9,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/HolyShitDutch/kashanka/internal/dbtypes"
+	"github.com/jackc/pgx/v5/pgtype"
 	"uuid"
 )
 
@@ -204,11 +204,13 @@ type CollectionsCard struct {
 }
 
 type User struct {
-	ID           uuid.UUID
-	Email        string
-	PasswordHash *string
-	InsertedAt   pgtype.Timestamptz
-	UpdatedAt    pgtype.Timestamptz
+	ID                   uuid.UUID
+	DisplayNameEncrypted []byte
+	EmailEncrypted       []byte
+	EmailHash            []byte
+	WebauthnID           []byte
+	InsertedAt           pgtype.Timestamptz
+	UpdatedAt            pgtype.Timestamptz
 }
 
 type UserToken struct {

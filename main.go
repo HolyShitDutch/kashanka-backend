@@ -21,7 +21,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	sessionStore, err := sessions.NewStore(config.SessionSigner)
+	sessionStore, err := sessions.NewStore(config.SessionEncryptionKey)
 	if err != nil {
 		logger.Error("Failed to initialize session store", "error", err)
 		os.Exit(1)

@@ -1,7 +1,6 @@
 package tests
 
 import (
-	"bytes"
 	"log/slog"
 	"testing"
 
@@ -14,8 +13,7 @@ import (
 func Router(t *testing.T, db *pgxpool.Pool, store sessions.Store) *echo.Echo {
 	t.Helper()
 
-	var logOutlet bytes.Buffer
-	logger := slog.New(slog.NewJSONHandler(&logOutlet, nil))
+	logger := slog.New(slog.DiscardHandler)
 
 	router, err := handlers.Router(&handlers.RouterDeps{
 		DB:           db,

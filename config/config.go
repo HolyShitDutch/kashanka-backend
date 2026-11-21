@@ -1,17 +1,17 @@
 package config
 
 import (
-	"crypto/hkdf"
-	"crypto/sha256"
 	"encoding/base64"
 	"encoding/hex"
 	"log"
 	"net"
 	"os"
+	"slices"
 	"strings"
 	"time"
 
 	"golang.org/x/crypto/chacha20"
+	"lukechampine.com/blake3"
 )
 
 func MustGetenv(name string) string {
@@ -39,14 +39,12 @@ func MustGetenvBase64(name string) []byte {
 	return binary
 }
 
-const KeyDerivationSalt = "053754807554f8a549896318ffba62abea48aa4c5006f949fcf9cf918270ef8cd57dfbdda5432cbb06867a3d8e2eb074c71febac5ba0f6efb357334b58e98801"
+var keyDerivationSalt, err = hex.DecodeString("053754807554f8a549896318ffba62abea48aa4c5006f949fcf9cf918270ef8cd57dfbdda5432cbb06867a3d8e2eb074c71febac5ba0f6efb357334b58e98801")
 
-func MustDeriveKey(info string, keySize int) []byte {
-	salt, _ := hex.DecodeString(KeyDerivationSalt)
-	key, err := hkdf.Key(sha256.New, SecretKeyBase, salt, info, keySize)
-	if err != nil {
-		panic(err) // This should never happen
-	}
+func MustDeriveKey(secretKeyBase, salt []byte, info string, keySize int) []byte {
+	key := make([]byte, keySize)
+	ikm := slices.Concat(secretKeyBase, salt)
+	blake3.DeriveKey(key[:], info, ikm)
 	return key
 }
 
@@ -65,7 +63,7 @@ var IsDev = AppEnv == "dev"
 var TestDatabaseUrl = os.Getenv("TEST_DATABASE_URL")
 var ViteDevServer = GetenvWithDefault("VITE_DEV_SERVER", "https://assets.localhost")
 var SecretKeyBase = MustGetenvBase64("SECRET_KEY_BASE")
-var SessionSigner = MustDeriveKey("kashanka/v1/session-signer", chacha20.KeySize)
+var SessionEncryptionKey = MustDeriveKey(SecretKeyBase, keyDerivationSalt, "github.com/moroz/kashanka-backend 2026-11 session encryption key", chacha20.KeySize)
 
 // Webauthn Settings
 const RPDisplayName = "卡閃卡 CardFlashCard"

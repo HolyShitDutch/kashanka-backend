@@ -16,8 +16,8 @@ func TestNewStore(t *testing.T) {
 		valid bool
 	}{
 		{bytes.Repeat([]byte{0xAA}, 32), true},
-		{bytes.Repeat([]byte{0x00}, 32), true},
 		{bytes.Repeat([]byte{0xFF}, 32), true},
+		{bytes.Repeat([]byte{0x00}, 32), false},
 		{bytes.Repeat([]byte{0xAA}, 33), false},
 		{bytes.Repeat([]byte{0xAA}, 64), false},
 		{bytes.Repeat([]byte{0xAA}, 121), false},

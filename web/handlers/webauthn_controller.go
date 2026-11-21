@@ -72,6 +72,41 @@ func (cc *webauthnController) RegisterStart(c *echo.Context) error {
 	}
 
 	ctx.Session().Set("registration_challenge", sessionData)
-	ctx.SaveSession(c.Response())
+	ctx.Session().Set("new_user", user)
+	if err := ctx.SaveSession(c.Response()); err != nil {
+		slog.Error("Failed to save session data", "error", err)
+		return echo.ErrInternalServerError
+	}
+
 	return helpers.RenderJSON(c, 200, creation)
+}
+
+func (cc *webauthnController) RegisterFinalize(c *echo.Context) error {
+	ctx := helpers.GetRequestContext(c)
+
+	sessionData, ok := ctx.Session().Get[*webauthn.SessionData]("registration_challenge")
+	if !ok {
+		slog.Error("WebAuthn attestation failed: Failed to decode WebAuthn session data", "details", "challenge")
+		return echo.NewHTTPError(http.StatusUnprocessableEntity, "Unprocessable Entity")
+	}
+
+	user, ok := ctx.Session().Get[*types.WebAuthnUser]("new_user")
+	if !ok {
+		slog.Error("WebAuthn attestation failed: Failed to decode WebAuthn session data")
+		return echo.NewHTTPError(http.StatusUnprocessableEntity, "Unprocessable Entity")
+	}
+
+	pcc, err := protocol.ParseCredentialCreationResponseBody(c.Request().Body)
+	if err != nil {
+		slog.Error("WebAuthn attestation failed: Failed to parse credential creation response", "err", err)
+		return echo.ErrBadRequest
+	}
+
+	credential, err := cc.webauthn.CreateCredential(user, *sessionData, pcc)
+	if err != nil {
+		return err
+	}
+	_ = credential
+
+	return nil
 }

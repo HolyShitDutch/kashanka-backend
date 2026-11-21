@@ -21,6 +21,7 @@ type Store interface {
 }
 
 var ErrTokenExpired = errors.New("token is expired")
+var ErrAllZeroKey = errors.New("the provided session encryption key must not be all zeroes")
 
 type store struct {
 	signer branca.Branca
@@ -29,6 +30,10 @@ type store struct {
 var _ Store = &store{}
 
 func NewStore(key []byte) (Store, error) {
+	if err := expectNonZeroKey(key); err != nil {
+		return nil, err
+	}
+
 	signer, err := branca.NewBranca(key)
 	if err != nil {
 		return nil, err
@@ -70,4 +75,13 @@ func (s *store) DecryptSession(cookie string, maxAge time.Duration) (session Ses
 	}
 
 	return decodeSession(payload)
+}
+
+func expectNonZeroKey(key []byte) error {
+	for _, b := range key {
+		if b != 0 {
+			return nil
+		}
+	}
+	return ErrAllZeroKey
 }

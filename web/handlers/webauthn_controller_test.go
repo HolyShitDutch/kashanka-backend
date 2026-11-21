@@ -1,7 +1,8 @@
 package handlers_test
 
 import (
-	"fmt"
+	"bytes"
+	"encoding/json/v2"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -9,6 +10,7 @@ import (
 	"testing"
 
 	"github.com/descope/virtualwebauthn"
+	"github.com/moroz/kashanka/internal/requests"
 	"github.com/moroz/kashanka/internal/tests"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -26,7 +28,12 @@ func TestWebauthnController_RegisterStart(t *testing.T) {
 
 	client := tests.ClientWithSession(t, origin, store, nil)
 
-	req, _ := http.NewRequest("GET", srv.URL+"/webauthn/register/start", nil)
+	var body bytes.Buffer
+	json.MarshalWrite(&body, &requests.WebauthnRegisterStartRequest{
+		DisplayName: "John Smith",
+	})
+	req, _ := http.NewRequest("POST", srv.URL+"/webauthn/register/start", &body)
+	req.Header.Add("Content-Type", "application/json")
 	resp, err := client.Do(req)
 	require.NoError(t, err)
 
@@ -47,5 +54,11 @@ func TestWebauthnController_RegisterStart(t *testing.T) {
 	require.NoError(t, err)
 
 	attestationResponse := virtualwebauthn.CreateAttestationResponse(rp, authenticator, credential, *parsedAttestationOptions)
-	fmt.Println(attestationResponse)
+
+	req, _ = http.NewRequest("POST", srv.URL+"/webauthn/register/finalize", bytes.NewBufferString(attestationResponse))
+	req.Header.Add("Content-Type", "application/json")
+	resp, err = client.Do(req)
+	require.NoError(t, err)
+
+	assert.Equal(t, 200, resp.StatusCode)
 }

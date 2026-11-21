@@ -18,6 +18,7 @@ require (
 )
 
 require (
+	github.com/bincyber/go-sqlcrypter v0.4.0 // indirect
 	github.com/go-viper/mapstructure/v2 v2.5.0 // indirect
 	github.com/go-webauthn/x v0.3.1 // indirect
 	github.com/golang-jwt/jwt/v5 v5.3.1 // indirect
@@ -26,6 +27,9 @@ require (
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
 	github.com/jackc/puddle/v2 v2.2.3 // indirect
+	github.com/jinzhu/inflection v1.0.0 // indirect
+	github.com/jinzhu/now v1.1.5 // indirect
+	github.com/klauspost/cpuid/v2 v2.0.9 // indirect
 	github.com/mfridman/interpolate v0.2.0 // indirect
 	github.com/philhofer/fwd v1.2.0 // indirect
 	github.com/sethvargo/go-retry v0.5.0 // indirect
@@ -37,6 +41,8 @@ require (
 	golang.org/x/sys v0.50.0 // indirect
 	golang.org/x/text v0.44.0 // indirect
 	golang.org/x/time v0.15.0 // indirect
+	gorm.io/gorm v1.31.2 // indirect
+	lukechampine.com/blake3 v1.5.1 // indirect
 	v.io v0.1.15 // indirect
 	v.io/x/lib v0.1.7 // indirect
 )

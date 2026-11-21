@@ -3,20 +3,25 @@ package types
 import (
 	"bytes"
 	"crypto/rand"
+	"encoding/gob"
 	"strings"
 
 	"github.com/go-webauthn/webauthn/webauthn"
 	"github.com/moroz/kashanka/internal/names"
 )
 
-type webAuthnUser struct {
-	id   []byte
-	name string
+type WebAuthnUser struct {
+	ID   []byte
+	Name string
 }
 
-var _ webauthn.User = &webAuthnUser{}
+func init() {
+	gob.Register(&WebAuthnUser{})
+}
 
-func NewWebAuthnUser(displayName string) webauthn.User {
+var _ webauthn.User = &WebAuthnUser{}
+
+func NewWebAuthnUser(displayName string) *WebAuthnUser {
 	id := make([]byte, 64)
 	rand.Read(id)
 
@@ -25,24 +30,24 @@ func NewWebAuthnUser(displayName string) webauthn.User {
 		displayName = names.GenerateName()
 	}
 
-	return &webAuthnUser{
-		id:   id,
-		name: displayName,
+	return &WebAuthnUser{
+		ID:   id,
+		Name: displayName,
 	}
 }
 
-func (u *webAuthnUser) WebAuthnID() []byte {
-	return bytes.Clone(u.id)
+func (u *WebAuthnUser) WebAuthnID() []byte {
+	return bytes.Clone(u.ID)
 }
 
-func (u *webAuthnUser) WebAuthnCredentials() []webauthn.Credential {
+func (u *WebAuthnUser) WebAuthnCredentials() []webauthn.Credential {
 	return nil
 }
 
-func (u *webAuthnUser) WebAuthnName() string {
-	return u.name
+func (u *WebAuthnUser) WebAuthnName() string {
+	return u.Name
 }
 
-func (u *webAuthnUser) WebAuthnDisplayName() string {
-	return u.name
+func (u *WebAuthnUser) WebAuthnDisplayName() string {
+	return u.Name
 }

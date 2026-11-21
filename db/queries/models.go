@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/moroz/kashanka/internal/dbtypes"
 	"uuid"
 )
@@ -125,6 +126,55 @@ func (e Locale) Valid() bool {
 	return false
 }
 
+type UserTokenContext string
+
+const (
+	UserTokenContextAccess UserTokenContext = "access"
+)
+
+func (e *UserTokenContext) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = UserTokenContext(s)
+	case string:
+		*e = UserTokenContext(s)
+	default:
+		return fmt.Errorf("unsupported scan type for UserTokenContext: %T", src)
+	}
+	return nil
+}
+
+type NullUserTokenContext struct {
+	UserTokenContext UserTokenContext
+	Valid            bool // Valid is true if UserTokenContext is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullUserTokenContext) Scan(value interface{}) error {
+	if value == nil {
+		ns.UserTokenContext, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.UserTokenContext.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullUserTokenContext) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.UserTokenContext), nil
+}
+
+func (e UserTokenContext) Valid() bool {
+	switch e {
+	case UserTokenContextAccess:
+		return true
+	}
+	return false
+}
+
 type Card struct {
 	ID               uuid.UUID
 	QuestionLanguage Locale
@@ -157,6 +207,23 @@ type User struct {
 	ID           uuid.UUID
 	Email        string
 	PasswordHash *string
-	InsertedAt   time.Time
-	UpdatedAt    time.Time
+	InsertedAt   pgtype.Timestamptz
+	UpdatedAt    pgtype.Timestamptz
+}
+
+type UserToken struct {
+	ID         uuid.UUID
+	Token      []byte
+	Context    UserTokenContext
+	InsertedAt time.Time
+}
+
+type WebauthnCredential struct {
+	ID             uuid.UUID
+	UserID         uuid.UUID
+	RpID           string
+	Kid            []byte
+	CredentialJson []byte
+	InsertedAt     pgtype.Timestamptz
+	UpdatedAt      pgtype.Timestamptz
 }

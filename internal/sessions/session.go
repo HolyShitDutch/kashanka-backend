@@ -1,7 +1,8 @@
 package sessions
 
 import (
-	"github.com/fxamacker/cbor/v2"
+	"bytes"
+	"encoding/gob"
 )
 
 type Session map[string]any
@@ -20,11 +21,14 @@ func (c Session) Set(key string, value any) {
 }
 
 func (c Session) Serialize() ([]byte, error) {
-	return cbor.Marshal(c)
+	var out bytes.Buffer
+	err := gob.NewEncoder(&out).Encode(c)
+	return out.Bytes(), err
 }
 
 func decodeSession(payload []byte) (Session, error) {
 	var target Session
-	err := cbor.Unmarshal(payload, &target)
+	in := bytes.NewBuffer(payload)
+	err := gob.NewDecoder(in).Decode(&target)
 	return target, err
 }

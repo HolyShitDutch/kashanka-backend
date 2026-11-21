@@ -1,17 +1,32 @@
 package sessions_test
 
 import (
+	"encoding/gob"
 	"testing"
+	"time"
 
+	"github.com/go-webauthn/webauthn/webauthn"
 	"github.com/moroz/kashanka/internal/sessions"
+	"github.com/moroz/kashanka/internal/tests"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func roundTripTest[T any](value T) func(t *testing.T) {
 	return func(t *testing.T) {
+		gob.Register(value)
+
+		store := tests.SessionStore(t)
+
 		session := sessions.New()
 		session.Set("key", value)
-		actual, ok := session.Get[T]("key")
+		encrypted, err := store.EncryptSession(session)
+		require.NoError(t, err)
+
+		decrypted, err := store.DecryptSession(encrypted, time.Hour)
+		require.NoError(t, err)
+
+		actual, ok := decrypted.Get[T]("key")
 		assert.True(t, ok)
 		assert.Equal(t, value, actual)
 	}
@@ -29,7 +44,8 @@ func TestSessionEncDec(t *testing.T) {
 		{"[]byte", []byte{1, 2, 3}},
 		{"float64", float64(0.1)},
 		{"float32", float32(0.2)},
-		{"inline struct", struct{ test string }{"test"}},
+		{"inline struct", struct{ Test string }{"test"}},
+		{"webauthn session", &webauthn.SessionData{}},
 	}
 
 	for _, example := range examples {

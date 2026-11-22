@@ -9,6 +9,8 @@ import (
 )
 
 func TestDeriveKey(t *testing.T) {
+	t.Parallel()
+
 	secretKeyBase := bytes.Repeat([]byte{0xAA}, 32)
 	salt := bytes.Repeat([]byte{0x5C}, 32)
 	context := "github.com/HolyShitDutch/kashanka-backend 2026-11-21 15:20:00 TestDeriveKey"

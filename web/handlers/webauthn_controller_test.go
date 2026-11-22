@@ -19,6 +19,8 @@ import (
 )
 
 func TestWebauthnController_RegisterStart(t *testing.T) {
+	t.Parallel()
+
 	db := tests.Database(t)
 	store := tests.SessionStore(t)
 	router, err := handlers.Router(&handlers.RouterDeps{

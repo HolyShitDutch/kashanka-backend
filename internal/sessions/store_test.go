@@ -11,6 +11,8 @@ import (
 )
 
 func TestNewStore(t *testing.T) {
+	t.Parallel()
+
 	var examples = []struct {
 		key   []byte
 		valid bool
@@ -39,6 +41,8 @@ func TestNewStore(t *testing.T) {
 }
 
 func TestSessionStoreEncDecCookie(t *testing.T) {
+	t.Parallel()
+
 	key := bytes.Repeat([]byte{0xAA}, 32)
 	store, err := sessions.NewStore(key)
 	require.NoError(t, err)
@@ -55,6 +59,8 @@ func TestSessionStoreEncDecCookie(t *testing.T) {
 }
 
 func TestSessionStoreEncDecSession(t *testing.T) {
+	t.Parallel()
+
 	key := bytes.Repeat([]byte{0xAA}, 32)
 	store, err := sessions.NewStore(key)
 	require.NoError(t, err)

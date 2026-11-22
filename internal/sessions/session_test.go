@@ -5,9 +5,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/go-webauthn/webauthn/webauthn"
 	"github.com/HolyShitDutch/kashanka/internal/sessions"
 	"github.com/HolyShitDutch/kashanka/internal/tests"
+	"github.com/go-webauthn/webauthn/webauthn"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -33,6 +33,8 @@ func roundTripTest[T any](value T) func(t *testing.T) {
 }
 
 func TestSessionEncDec(t *testing.T) {
+	t.Parallel()
+
 	var examples = []struct {
 		name  string
 		value any

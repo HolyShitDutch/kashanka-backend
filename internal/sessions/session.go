@@ -20,6 +20,12 @@ func (c Session) Set(key string, value any) {
 	c[key] = value
 }
 
+func (c Session) Delete[T any](key string) (T, bool) {
+	value, ok := c.Get[T](key)
+	delete(c, key)
+	return value, ok
+}
+
 func (c Session) Serialize() ([]byte, error) {
 	var out bytes.Buffer
 	err := gob.NewEncoder(&out).Encode(c)

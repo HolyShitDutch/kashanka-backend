@@ -78,17 +78,19 @@ func (cc *webauthnController) RegisterStart(c *echo.Context) error {
 func (cc *webauthnController) RegisterFinalize(c *echo.Context) error {
 	ctx := helpers.GetRequestContext(c)
 
-	sessionData, ok := ctx.Session().Get[*webauthn.SessionData]("registration_challenge")
+	sessionData, ok := ctx.Session().Delete[*webauthn.SessionData]("registration_challenge")
 	if !ok {
 		slog.Error("WebAuthn attestation failed: Failed to decode WebAuthn session data", "details", "challenge")
-		return echo.NewHTTPError(http.StatusUnprocessableEntity, "Unprocessable Entity")
+		return echo.ErrBadRequest
 	}
 
-	userData, ok := ctx.Session().Get[*types.WebAuthnUser]("new_user")
+	userData, ok := ctx.Session().Delete[*types.WebAuthnUser]("new_user")
 	if !ok {
 		slog.Error("WebAuthn attestation failed: Failed to decode WebAuthn session data")
-		return echo.NewHTTPError(http.StatusUnprocessableEntity, "Unprocessable Entity")
+		return echo.ErrBadRequest
 	}
+
+	ctx.SaveSession(c.Response())
 
 	pcc, err := protocol.ParseCredentialCreationResponseBody(c.Request().Body)
 	if err != nil {
@@ -105,6 +107,7 @@ func (cc *webauthnController) RegisterFinalize(c *echo.Context) error {
 	if err != nil {
 		return err
 	}
+
 	_ = user
 
 	return nil

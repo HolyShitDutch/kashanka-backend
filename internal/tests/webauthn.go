@@ -1,8 +1,8 @@
 package tests
 
 import (
-	"github.com/descope/virtualwebauthn"
 	"github.com/HolyShitDutch/kashanka/config"
+	"github.com/descope/virtualwebauthn"
 )
 
 func RelyingParty() virtualwebauthn.RelyingParty {

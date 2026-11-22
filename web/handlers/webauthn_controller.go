@@ -4,37 +4,31 @@ import (
 	"log/slog"
 	"net/http"
 
-	"github.com/go-webauthn/webauthn/protocol"
-	"github.com/go-webauthn/webauthn/webauthn"
-	"github.com/labstack/echo/v5"
-	"github.com/HolyShitDutch/kashanka/config"
 	"github.com/HolyShitDutch/kashanka/internal/requests"
 	"github.com/HolyShitDutch/kashanka/internal/types"
 	"github.com/HolyShitDutch/kashanka/services"
 	"github.com/HolyShitDutch/kashanka/web/helpers"
+	"github.com/go-webauthn/webauthn/protocol"
+	"github.com/go-webauthn/webauthn/webauthn"
+	"github.com/labstack/echo/v5"
 )
 
 type webauthnController struct {
-	db       services.DB
-	webauthn *webauthn.WebAuthn
+	db          services.DB
+	webauthn    *webauthn.WebAuthn
+	userService *services.UserService
 }
 
 type WebauthnControllerDeps struct {
-	DB        services.DB
-	RPID      string
-	RPOrigins []string
+	DB       services.DB
+	WebAuthn *webauthn.WebAuthn
 }
 
 func WebauthnController(deps *WebauthnControllerDeps) *webauthnController {
-	w, _ := webauthn.New(&webauthn.Config{
-		RPID:          deps.RPID,
-		RPDisplayName: config.RPDisplayName,
-		RPOrigins:     config.RPOrigins,
-	})
-
 	return &webauthnController{
-		db:       deps.DB,
-		webauthn: w,
+		db:          deps.DB,
+		webauthn:    deps.WebAuthn,
+		userService: services.NewUserService(deps.DB),
 	}
 }
 
@@ -90,7 +84,7 @@ func (cc *webauthnController) RegisterFinalize(c *echo.Context) error {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, "Unprocessable Entity")
 	}
 
-	user, ok := ctx.Session().Get[*types.WebAuthnUser]("new_user")
+	userData, ok := ctx.Session().Get[*types.WebAuthnUser]("new_user")
 	if !ok {
 		slog.Error("WebAuthn attestation failed: Failed to decode WebAuthn session data")
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, "Unprocessable Entity")
@@ -102,11 +96,16 @@ func (cc *webauthnController) RegisterFinalize(c *echo.Context) error {
 		return echo.ErrBadRequest
 	}
 
-	credential, err := cc.webauthn.CreateCredential(user, *sessionData, pcc)
+	credential, err := cc.webauthn.CreateCredential(userData, *sessionData, pcc)
 	if err != nil {
 		return err
 	}
-	_ = credential
+
+	user, err := cc.userService.RegisterUserWithCredential(c.Request().Context(), cc.webauthn, userData, credential)
+	if err != nil {
+		return err
+	}
+	_ = user
 
 	return nil
 }

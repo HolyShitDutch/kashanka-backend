@@ -38,7 +38,6 @@ func main() {
 
 	r, err := handlers.Router(&handlers.RouterDeps{
 		DB:           db,
-		Logger:       logger,
 		SessionStore: sessionStore,
 	})
 	if err != nil {

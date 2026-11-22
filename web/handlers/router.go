@@ -4,21 +4,22 @@ import (
 	"errors"
 	"log/slog"
 
+	"github.com/HolyShitDutch/kashanka/config"
+	"github.com/HolyShitDutch/kashanka/internal/sessions"
+	"github.com/go-webauthn/webauthn/webauthn"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/labstack/echo/v5"
 	"github.com/labstack/echo/v5/middleware"
-	"github.com/HolyShitDutch/kashanka/config"
-	"github.com/HolyShitDutch/kashanka/internal/sessions"
 )
 
 type RouterDeps struct {
 	DB           *pgxpool.Pool
-	Logger       *slog.Logger
 	SessionStore sessions.Store
+	WebAuthn     *webauthn.WebAuthn
 }
 
 func (r *RouterDeps) Validate() bool {
-	return r.DB != nil && r.Logger != nil && r.SessionStore != nil
+	return r.DB != nil && r.SessionStore != nil
 }
 
 func Router(props *RouterDeps) (*echo.Echo, error) {
@@ -26,8 +27,16 @@ func Router(props *RouterDeps) (*echo.Echo, error) {
 		return nil, errors.New("invalid props")
 	}
 
+	if props.WebAuthn == nil {
+		w, err := config.WebauthnConfig()
+		if err != nil {
+			return nil, err
+		}
+		props.WebAuthn = w
+	}
+
 	r := echo.New()
-	r.Logger = props.Logger
+	r.Logger = slog.Default()
 
 	r.Use(middleware.RequestLogger())
 	r.Use(SetCustomRequestContext(props.SessionStore))
@@ -42,9 +51,8 @@ func Router(props *RouterDeps) (*echo.Echo, error) {
 	r.GET("/sign-up/passkey", registrations.Passkey)
 
 	webauthn := WebauthnController(&WebauthnControllerDeps{
-		DB:        props.DB,
-		RPID:      config.RPID,
-		RPOrigins: config.RPOrigins,
+		DB:       props.DB,
+		WebAuthn: props.WebAuthn,
 	})
 	r.GET("/.well-known/webauthn", webauthn.WellKnown)
 	r.POST("/webauthn/register/start", webauthn.RegisterStart)

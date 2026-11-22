@@ -9,9 +9,11 @@ import (
 	"net/url"
 	"testing"
 
-	"github.com/descope/virtualwebauthn"
+	"github.com/HolyShitDutch/kashanka/db/queries"
 	"github.com/HolyShitDutch/kashanka/internal/requests"
 	"github.com/HolyShitDutch/kashanka/internal/tests"
+	"github.com/HolyShitDutch/kashanka/web/handlers"
+	"github.com/descope/virtualwebauthn"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -19,9 +21,17 @@ import (
 func TestWebauthnController_RegisterStart(t *testing.T) {
 	db := tests.Database(t)
 	store := tests.SessionStore(t)
-	router := tests.Router(t, db, store)
+	router, err := handlers.Router(&handlers.RouterDeps{
+		DB:           db,
+		SessionStore: store,
+	})
+	require.NoError(t, err)
 	srv := httptest.NewServer(router)
 	defer srv.Close()
+
+	countBefore, err := queries.New(db).CountUsers(t.Context())
+	require.NoError(t, err)
+	assert.Zero(t, countBefore)
 
 	origin, err := url.Parse(srv.URL)
 	require.NoError(t, err)
@@ -61,4 +71,8 @@ func TestWebauthnController_RegisterStart(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.Equal(t, 200, resp.StatusCode)
+
+	countAfter, err := queries.New(db).CountUsers(t.Context())
+	require.NoError(t, err)
+	assert.EqualValues(t, 1, countAfter)
 }

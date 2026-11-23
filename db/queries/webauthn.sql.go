@@ -8,18 +8,19 @@ package queries
 import (
 	"context"
 
+	go_sqlcrypter "github.com/bincyber/go-sqlcrypter"
 	"uuid"
 )
 
 const insertWebAuthnCredential = `-- name: InsertWebAuthnCredential :one
-insert into webauthn_credentials (user_id, rp_id, kid, credential_json) values ($1, $2, $3, $4) returning id, user_id, rp_id, kid, credential_json, inserted_at, updated_at
+insert into webauthn_credentials (user_id, rp_id, kid, credential_json_encrypted) values ($1, $2, $3, $4) returning id, user_id, rp_id, kid, credential_json_encrypted, inserted_at, updated_at
 `
 
 type InsertWebAuthnCredentialParams struct {
 	UserID         uuid.UUID
 	RpID           string
 	Kid            []byte
-	CredentialJson []byte
+	CredentialJSON go_sqlcrypter.EncryptedBytes
 }
 
 func (q *Queries) InsertWebAuthnCredential(ctx context.Context, arg *InsertWebAuthnCredentialParams) (*WebauthnCredential, error) {
@@ -27,7 +28,7 @@ func (q *Queries) InsertWebAuthnCredential(ctx context.Context, arg *InsertWebAu
 		arg.UserID,
 		arg.RpID,
 		arg.Kid,
-		arg.CredentialJson,
+		arg.CredentialJSON,
 	)
 	var i WebauthnCredential
 	err := row.Scan(
@@ -35,7 +36,7 @@ func (q *Queries) InsertWebAuthnCredential(ctx context.Context, arg *InsertWebAu
 		&i.UserID,
 		&i.RpID,
 		&i.Kid,
-		&i.CredentialJson,
+		&i.CredentialJSON,
 		&i.InsertedAt,
 		&i.UpdatedAt,
 	)

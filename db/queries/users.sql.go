@@ -7,6 +7,8 @@ package queries
 
 import (
 	"context"
+
+	go_sqlcrypter "github.com/bincyber/go-sqlcrypter"
 )
 
 const countUsers = `-- name: CountUsers :one
@@ -25,15 +27,15 @@ insert into users (display_name_encrypted, email_encrypted, email_hash, webauthn
 `
 
 type InsertUserParams struct {
-	DisplayNameEncrypted []byte
-	EmailEncrypted       []byte
-	EmailHash            []byte
-	WebauthnID           []byte
+	DisplayName    go_sqlcrypter.EncryptedBytes
+	EmailEncrypted []byte
+	EmailHash      []byte
+	WebauthnID     []byte
 }
 
 func (q *Queries) InsertUser(ctx context.Context, arg *InsertUserParams) (*User, error) {
 	row := q.db.QueryRow(ctx, insertUser,
-		arg.DisplayNameEncrypted,
+		arg.DisplayName,
 		arg.EmailEncrypted,
 		arg.EmailHash,
 		arg.WebauthnID,
@@ -41,7 +43,7 @@ func (q *Queries) InsertUser(ctx context.Context, arg *InsertUserParams) (*User,
 	var i User
 	err := row.Scan(
 		&i.ID,
-		&i.DisplayNameEncrypted,
+		&i.DisplayName,
 		&i.EmailEncrypted,
 		&i.EmailHash,
 		&i.WebauthnID,

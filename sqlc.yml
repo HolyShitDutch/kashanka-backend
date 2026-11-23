@@ -16,6 +16,14 @@ sql:
         emit_pointers_for_null_enum_types: true
         emit_enum_valid_method: true
 
+        initialisms:
+          - id
+          - json
+
+        rename:
+          credential_json_encrypted: "CredentialJSON"
+          display_name_encrypted: "DisplayName"
+
 overrides:
   go:
     overrides:
@@ -51,3 +59,13 @@ overrides:
       - column: "cards.answer_languages"
         go_type:
           type: "[]string"
+
+      - column: "users.display_name_encrypted"
+        go_type:
+          import: "github.com/bincyber/go-sqlcrypter"
+          type: "EncryptedBytes"
+
+      - column: "webauthn_credentials.credential_json_encrypted"
+        go_type:
+          import: "github.com/bincyber/go-sqlcrypter"
+          type: "EncryptedBytes"

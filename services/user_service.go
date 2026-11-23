@@ -28,8 +28,8 @@ func (s *UserService) RegisterUserWithCredential(ctx context.Context, config *we
 	defer tx.Rollback(ctx)
 
 	user, err := queries.New(s.db).InsertUser(ctx, &queries.InsertUserParams{
-		DisplayNameEncrypted: sqlcrypter.NewEncryptedBytes(userData.Name),
-		WebauthnID:           userData.ID,
+		DisplayName: sqlcrypter.NewEncryptedBytes(userData.Name),
+		WebauthnID:  userData.ID,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("RegisterUserWithCredential: %w", err)
@@ -41,7 +41,7 @@ func (s *UserService) RegisterUserWithCredential(ctx context.Context, config *we
 		RpID:           config.Config.RPID,
 		UserID:         user.ID,
 		Kid:            credential.ID,
-		CredentialJson: sqlcrypter.NewEncryptedBytes(string(credentialJson)),
+		CredentialJSON: sqlcrypter.NewEncryptedBytes(string(credentialJson)),
 	})
 
 	if err := tx.Commit(ctx); err != nil {

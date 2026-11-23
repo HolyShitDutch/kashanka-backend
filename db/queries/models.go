@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/HolyShitDutch/kashanka/internal/dbtypes"
+	go_sqlcrypter "github.com/bincyber/go-sqlcrypter"
 	"github.com/jackc/pgx/v5/pgtype"
 	"uuid"
 )
@@ -204,13 +205,13 @@ type CollectionsCard struct {
 }
 
 type User struct {
-	ID                   uuid.UUID
-	DisplayNameEncrypted []byte
-	EmailEncrypted       []byte
-	EmailHash            []byte
-	WebauthnID           []byte
-	InsertedAt           pgtype.Timestamptz
-	UpdatedAt            pgtype.Timestamptz
+	ID             uuid.UUID
+	DisplayName    go_sqlcrypter.EncryptedBytes
+	EmailEncrypted []byte
+	EmailHash      []byte
+	WebauthnID     []byte
+	InsertedAt     pgtype.Timestamptz
+	UpdatedAt      pgtype.Timestamptz
 }
 
 type UserToken struct {
@@ -225,7 +226,7 @@ type WebauthnCredential struct {
 	UserID         uuid.UUID
 	RpID           string
 	Kid            []byte
-	CredentialJson []byte
+	CredentialJSON go_sqlcrypter.EncryptedBytes
 	InsertedAt     pgtype.Timestamptz
 	UpdatedAt      pgtype.Timestamptz
 }

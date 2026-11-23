@@ -56,11 +56,8 @@ func TestWebauthnController_RegisterStart(t *testing.T) {
 	assert.NotEmpty(t, response)
 
 	rp := tests.RelyingParty()
-	authenticator := virtualwebauthn.NewAuthenticatorWithOptions(virtualwebauthn.AuthenticatorOptions{
-		Transports: []virtualwebauthn.Transport{virtualwebauthn.TransportUSB, virtualwebauthn.TransportInternal},
-	})
-
-	credential := virtualwebauthn.NewCredential(virtualwebauthn.KeyTypeEC2)
+	authenticator := tests.Authenticator()
+	credential := tests.Credential()
 
 	parsedAttestationOptions, err := virtualwebauthn.ParseAttestationOptions(string(response))
 	require.NoError(t, err)

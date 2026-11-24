@@ -14,9 +14,8 @@ import (
 )
 
 type webauthnController struct {
-	db          services.DB
-	webauthn    *webauthn.WebAuthn
-	userService *services.UserService
+	db       services.DB
+	webauthn *webauthn.WebAuthn
 }
 
 type WebauthnControllerDeps struct {
@@ -26,9 +25,8 @@ type WebauthnControllerDeps struct {
 
 func WebauthnController(deps *WebauthnControllerDeps) *webauthnController {
 	return &webauthnController{
-		db:          deps.DB,
-		webauthn:    deps.WebAuthn,
-		userService: services.NewUserService(deps.DB),
+		db:       deps.DB,
+		webauthn: deps.WebAuthn,
 	}
 }
 
@@ -78,37 +76,57 @@ func (cc *webauthnController) RegisterStart(c *echo.Context) error {
 func (cc *webauthnController) RegisterFinalize(c *echo.Context) error {
 	ctx := helpers.GetRequestContext(c)
 
-	sessionData, ok := ctx.Session().Delete[*webauthn.SessionData]("registration_challenge")
+	sessionData, ok := ctx.Session().Get[*webauthn.SessionData]("registration_challenge")
 	if !ok {
 		slog.Error("WebAuthn attestation failed: Failed to decode WebAuthn session data", "details", "challenge")
 		return echo.ErrBadRequest
 	}
 
-	userData, ok := ctx.Session().Delete[*types.WebAuthnUser]("new_user")
+	userData, ok := ctx.Session().Get[*types.WebAuthnUser]("new_user")
 	if !ok {
 		slog.Error("WebAuthn attestation failed: Failed to decode WebAuthn session data")
 		return echo.ErrBadRequest
 	}
 
-	ctx.SaveSession(c.Response())
-
 	pcc, err := protocol.ParseCredentialCreationResponseBody(c.Request().Body)
 	if err != nil {
-		slog.Error("WebAuthn attestation failed: Failed to parse credential creation response", "err", err)
+		slog.Error("WebAuthn attestation failed: Failed to parse credential creation response", "error", err)
 		return echo.ErrBadRequest
 	}
 
 	credential, err := cc.webauthn.CreateCredential(userData, *sessionData, pcc)
 	if err != nil {
-		return err
+		slog.Error("WebAuthn attestation failed", "error", err)
+		return echo.ErrBadRequest
 	}
 
-	user, err := cc.userService.RegisterUserWithCredential(c.Request().Context(), cc.webauthn, userData, credential)
+	tx, err := cc.db.Begin(c.Request().Context())
+	if err != nil {
+		slog.Error("Failed to begin transaction in RegisterFinalize", "error", err)
+		return echo.ErrInternalServerError
+	}
+	defer tx.Rollback(c.Request().Context())
+
+	user, err := services.NewUserService(tx).RegisterUserWithCredential(c.Request().Context(), cc.webauthn, userData, credential)
 	if err != nil {
 		return err
 	}
 
-	_ = user
+	token, err := services.NewUserTokenService(tx).CreateAccessTokenForUser(c.Request().Context(), user)
+	if err != nil {
+		return err
+	}
 
-	return nil
+	if err := tx.Commit(c.Request().Context()); err != nil {
+		slog.Error("Failed to store session", "error", err)
+		return echo.ErrInternalServerError
+	}
+
+	ctx.Session().Delete("registration_challenge", "new_user")
+	ctx.Session().Set("access_token", token.PlaintextToken)
+	ctx.SaveSession(c.Response())
+
+	return helpers.RenderJSON(c, 200, map[string]any{
+		"data": user,
+	})
 }

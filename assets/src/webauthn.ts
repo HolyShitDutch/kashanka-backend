@@ -70,9 +70,9 @@ function initWebauthnRegistration() {
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const name = form.querySelector("input[name=display_name]")?.value;
+    const name = form.querySelector<HTMLInputElement>("input[name=display_name]")?.value;
 
-    const options = await getCredentialCreationOptions();
+    const options = await getCredentialCreationOptions(name ?? "");
     const credential = await navigator.credentials.create(options);
     if (!credential) return;
   });

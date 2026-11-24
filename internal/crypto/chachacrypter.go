@@ -53,7 +53,7 @@ func (c *ChachaCrypter) Encrypt(w io.Writer, r io.Reader) error {
 		return fmt.Errorf("failed to generate %v-byte random nonce: %w", chacha20.NonceSizeX, err)
 	}
 
-	padded, err := Pad(src, CalculatePaddingLength(len(src)))
+	padded, err := Pad(src, CalculatePaddingLength(len(src)+1))
 	if err != nil {
 		return err // unlikely
 	}

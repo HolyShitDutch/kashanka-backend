@@ -2,6 +2,7 @@ package crypto_test
 
 import (
 	"bytes"
+	"strings"
 	"testing"
 
 	"github.com/HolyShitDutch/kashanka/internal/crypto"
@@ -34,16 +35,22 @@ func TestChachaCrypterRoundTrip(t *testing.T) {
 	crypter, err := crypto.NewEncryptionProvider(key)
 	require.NoError(t, err)
 
-	var ciphertext, decrypted bytes.Buffer
+	var examples = []string{
+		"Did you ever hear the Tragedy of Darth Plagueis the Wise?",
+		"test",
+		strings.Repeat("test", 10),
+	}
 
-	original := "Did you ever hear the Tragedy of Darth Plagueis the Wise?"
-	err = crypter.Encrypt(&ciphertext, bytes.NewBufferString(original))
-	assert.NoError(t, err)
-	assert.NotEmpty(t, ciphertext.Bytes())
+	for _, example := range examples {
+		var ciphertext, decrypted bytes.Buffer
+		err = crypter.Encrypt(&ciphertext, bytes.NewBufferString(example))
+		assert.NoError(t, err)
+		assert.NotEmpty(t, ciphertext.Bytes())
 
-	err = crypter.Decrypt(&decrypted, &ciphertext)
-	assert.NoError(t, err)
-	assert.Equal(t, original, decrypted.String())
+		err = crypter.Decrypt(&decrypted, &ciphertext)
+		assert.NoError(t, err)
+		assert.Equal(t, example, decrypted.String())
+	}
 }
 
 func TestChachaCrypterDecryptWithOlderKey(t *testing.T) {

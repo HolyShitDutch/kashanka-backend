@@ -217,6 +217,7 @@ type User struct {
 type UserToken struct {
 	ID         uuid.UUID
 	Token      []byte
+	UserID     uuid.UUID
 	Context    UserTokenContext
 	InsertedAt time.Time
 }

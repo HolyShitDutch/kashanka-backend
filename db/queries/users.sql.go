@@ -9,6 +9,7 @@ import (
 	"context"
 
 	go_sqlcrypter "github.com/bincyber/go-sqlcrypter"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const countUsers = `-- name: CountUsers :one
@@ -20,6 +21,32 @@ func (q *Queries) CountUsers(ctx context.Context) (int64, error) {
 	var count int64
 	err := row.Scan(&count)
 	return count, err
+}
+
+const getUserByAccessToken = `-- name: GetUserByAccessToken :one
+select u.id, u.display_name_encrypted, u.email_encrypted, u.email_hash, u.webauthn_id, u.inserted_at, u.updated_at from users u
+join user_tokens ut on ut.user_id = u.id
+where ut.context = 'access' and ut.token = $1 and ut.inserted_at > now() - $2::interval
+`
+
+type GetUserByAccessTokenParams struct {
+	Token  []byte
+	Maxage pgtype.Interval
+}
+
+func (q *Queries) GetUserByAccessToken(ctx context.Context, arg *GetUserByAccessTokenParams) (*User, error) {
+	row := q.db.QueryRow(ctx, getUserByAccessToken, arg.Token, arg.Maxage)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.DisplayName,
+		&i.EmailEncrypted,
+		&i.EmailHash,
+		&i.WebauthnID,
+		&i.InsertedAt,
+		&i.UpdatedAt,
+	)
+	return &i, err
 }
 
 const insertUser = `-- name: InsertUser :one

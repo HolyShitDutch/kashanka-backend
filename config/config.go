@@ -51,6 +51,9 @@ func MustDeriveKey(secretKeyBase, salt []byte, info string, keySize int) []byte 
 
 const SessionCookieName = "_kashanka_session"
 const SessionMaxAge = 24 * time.Hour
+const SessionAccessTokenKey = "access_token"
+
+const AccessTokenValidity = 24 * time.Hour
 
 var AppEnv = GetenvWithDefault("APP_ENV", "dev")
 var AppHost = GetenvWithDefault("HOST", "::")

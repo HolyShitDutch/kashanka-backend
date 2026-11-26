@@ -43,20 +43,42 @@ func Router(props *RouterDeps) (*echo.Echo, error) {
 	r.Use(ReadSessionCookie)
 
 	collections := CollectionController(props.DB)
-	r.GET("/", collections.Index)
-	r.GET("/collections/:slug", collections.Show)
-
 	registrations := UserRegistrationController()
-	r.GET("/sign-up", registrations.New)
-	r.GET("/sign-up/passkey", registrations.Passkey)
-
 	webauthn := WebauthnController(&WebauthnControllerDeps{
 		DB:       props.DB,
 		WebAuthn: props.WebAuthn,
 	})
-	r.GET("/.well-known/webauthn", webauthn.WellKnown)
-	r.POST("/webauthn/register/start", webauthn.RegisterStart)
-	r.POST("/webauthn/register/finalize", webauthn.RegisterFinalize)
+
+	{
+		// Routes available to everyone
+		g := r.Group("")
+		g.GET("/.well-known/webauthn", webauthn.WellKnown)
+	}
+
+	{
+		// Routes only exposed to unauthenticated users
+		g := r.Group("")
+		g.Use(FetchUserFromSession(props.DB))
+		g.Use(RedirectIfAuthenticated)
+
+		g.GET("/sign-up", registrations.New)
+		g.GET("/sign-up/passkey", registrations.Passkey)
+
+		sessions := UserSessionController()
+		g.GET("/sign-in", sessions.New)
+
+		g.POST("/webauthn/register/start", webauthn.RegisterStart)
+		g.POST("/webauthn/register/finalize", webauthn.RegisterFinalize)
+	}
+
+	{
+		g := r.Group("")
+		g.Use(FetchUserFromSession(props.DB))
+		g.Use(RequireAuthenticatedUser)
+
+		g.GET("/", collections.Index)
+		g.GET("/collections/:slug", collections.Show)
+	}
 
 	if !config.IsProd {
 		r.IPExtractor = echo.ExtractIPDirect()

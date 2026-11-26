@@ -6,12 +6,14 @@ import (
 	"time"
 
 	"github.com/HolyShitDutch/kashanka/config"
+	"github.com/HolyShitDutch/kashanka/db/queries"
 	"github.com/HolyShitDutch/kashanka/internal/sessions"
 )
 
 type RequestContext struct {
 	session      sessions.Session
 	sessionStore sessions.Store
+	User         *queries.User
 }
 
 func NewRequestContext(store sessions.Store) *RequestContext {

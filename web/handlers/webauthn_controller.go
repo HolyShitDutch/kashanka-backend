@@ -4,6 +4,7 @@ import (
 	"log/slog"
 	"net/http"
 
+	"github.com/HolyShitDutch/kashanka/config"
 	"github.com/HolyShitDutch/kashanka/internal/requests"
 	"github.com/HolyShitDutch/kashanka/internal/types"
 	"github.com/HolyShitDutch/kashanka/services"
@@ -123,7 +124,7 @@ func (cc *webauthnController) RegisterFinalize(c *echo.Context) error {
 	}
 
 	ctx.Session().Delete("registration_challenge", "new_user")
-	ctx.Session().Set("access_token", token.PlaintextToken)
+	ctx.Session().Set(config.SessionAccessTokenKey, token.PlaintextToken)
 	ctx.SaveSession(c.Response())
 
 	return helpers.RenderJSON(c, 200, map[string]any{

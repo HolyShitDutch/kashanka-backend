@@ -7,23 +7,27 @@ package queries
 
 import (
 	"context"
+
+	"uuid"
 )
 
 const insertUserToken = `-- name: InsertUserToken :one
-insert into user_tokens (context, token) values ($1, $2) returning id, token, context, inserted_at
+insert into user_tokens (context, token, user_id) values ($1, $2, $3) returning id, token, user_id, context, inserted_at
 `
 
 type InsertUserTokenParams struct {
 	Context UserTokenContext
 	Token   []byte
+	UserID  uuid.UUID
 }
 
 func (q *Queries) InsertUserToken(ctx context.Context, arg *InsertUserTokenParams) (*UserToken, error) {
-	row := q.db.QueryRow(ctx, insertUserToken, arg.Context, arg.Token)
+	row := q.db.QueryRow(ctx, insertUserToken, arg.Context, arg.Token, arg.UserID)
 	var i UserToken
 	err := row.Scan(
 		&i.ID,
 		&i.Token,
+		&i.UserID,
 		&i.Context,
 		&i.InsertedAt,
 	)
